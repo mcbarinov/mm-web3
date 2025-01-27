@@ -1,4 +1,5 @@
 from .account import TxRoute as TxRoute
+from .cli import init_logger as init_logger
 from .node import Nodes as Nodes
 from .node import random_node as random_node
 from .proxy import Proxies as Proxies
