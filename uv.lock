@@ -380,7 +380,7 @@ wheels = [
 
 [[package]]
 name = "mm-crypto-utils"
-version = "0.0.3"
+version = "0.0.4"
 source = { editable = "." }
 dependencies = [
     { name = "loguru" },
