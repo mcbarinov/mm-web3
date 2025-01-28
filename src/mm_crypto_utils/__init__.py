@@ -1,5 +1,5 @@
+from .account import AddressToPrivate as AddressToPrivate
 from .account import TxRoute as TxRoute
-from .account import map_private_keys_to_addresses as map_private_keys_to_addresses
 from .calcs import calc_decimal_value as calc_decimal_value
 from .log import get_log_prefix as get_log_prefix
 from .log import init_logger as init_logger

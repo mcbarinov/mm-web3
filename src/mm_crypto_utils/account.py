@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import os
 from collections.abc import Callable
 from pathlib import Path
 
@@ -78,21 +79,39 @@ def read_addresses_from_file(source: Path, is_valid_address: Callable[[str], boo
     return addresses
 
 
-def map_private_keys_to_addresses(
-    private_keys: list[str], address_from_private: Callable[[str], str], address_lowercase: bool = False
-) -> dict[str, str]:
-    """Create a dictionary of private keys with addresses as keys.
-    Raises:
-        ValueError: if private key is invalid
-    """
+class AddressToPrivate(dict[str, str]):
+    """Map of addresses to private keys."""
 
-    result = {}
-    for private_key in private_keys:
-        with contextlib.suppress(Exception):
-            address = address_from_private(private_key)
-        if address is None:
-            raise ValueError(f"invalid private key: {private_key}")
-        if address_lowercase:
-            address = address.lower()
-        result[address] = private_key
-    return result
+    @staticmethod
+    def from_list(
+        private_keys: list[str], address_from_private: Callable[[str], str | None], address_lowercase: bool = False
+    ) -> AddressToPrivate:
+        """Create a dictionary of private keys with addresses as keys.
+        Raises:
+            ValueError: if private key is invalid
+        """
+        result = AddressToPrivate()
+        for private_key in private_keys:
+            with contextlib.suppress(Exception):
+                address = address_from_private(private_key)
+            if address is None:
+                raise ValueError(f"invalid private key: {private_key}")
+            if address_lowercase:
+                address = address.lower()
+            result[address] = private_key
+        return result
+
+    @staticmethod
+    def from_file(
+        private_keys_file: Path, address_from_private: Callable[[str], str | None], address_lowercase: bool = False
+    ) -> AddressToPrivate:
+        """Create a dictionary of private keys with addresses as keys from a file.
+        Raises:
+            ValueError: If the file cannot be read or any private key is invalid.
+        """
+        private_keys_file = private_keys_file.expanduser()
+        if not os.access(private_keys_file, os.R_OK):
+            raise ValueError(f"can't read from the file: {private_keys_file}")
+
+        private_keys = private_keys_file.read_text().strip().split("\n")
+        return AddressToPrivate.from_list(private_keys, address_from_private, address_lowercase)

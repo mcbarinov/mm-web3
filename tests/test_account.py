@@ -1,6 +1,6 @@
 from eth_account import Account
 
-from mm_crypto_utils.account import map_private_keys_to_addresses
+from mm_crypto_utils.account import AddressToPrivate
 
 
 def eth_get_account(private_key: str) -> str:
@@ -16,8 +16,8 @@ def test_map_private_keys_to_addresses():
     a2 = "0x7d29Cfe669910A6c184F390396068d2eba27943E"
     a3 = "0x51f81C8f577345df75c89f21e766fC998EfBfb7D"
 
-    keys_dict = map_private_keys_to_addresses([p1, p2, p3], eth_get_account)
-    assert keys_dict == {a1: p1, a2: p2, a3: p3}
+    res = AddressToPrivate.from_list([p1, p2, p3], eth_get_account)
+    assert res == {a1: p1, a2: p2, a3: p3}
 
-    keys_dict = map_private_keys_to_addresses([p1, p2, p3], eth_get_account, address_lowercase=True)
-    assert keys_dict == {a1.lower(): p1, a2.lower(): p2, a3.lower(): p3}
+    res = AddressToPrivate.from_list([p1, p2, p3], eth_get_account, address_lowercase=True)
+    assert res == {a1.lower(): p1, a2.lower(): p2, a3.lower(): p3}
