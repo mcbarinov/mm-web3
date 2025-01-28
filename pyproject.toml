@@ -1,6 +1,6 @@
 [project]
 name = "mm-crypto-utils"
-version = "0.0.4"
+version = "0.0.5"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
@@ -20,6 +20,7 @@ dev-dependencies = [
     "pip-audit~=2.7.3",
     "bandit~=1.8.2",
     "mypy~=1.14.1",
+    "eth-account>=0.13.4",
 ]
 
 [tool.mypy]

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 from collections.abc import Callable
 from pathlib import Path
 
@@ -75,3 +76,23 @@ def read_addresses_from_file(source: Path, is_valid_address: Callable[[str], boo
         addresses.append(line)
 
     return addresses
+
+
+def map_private_keys_to_addresses(
+    private_keys: list[str], address_from_private: Callable[[str], str], address_lowercase: bool = False
+) -> dict[str, str]:
+    """Create a dictionary of private keys with addresses as keys.
+    Raises:
+        ValueError: if private key is invalid
+    """
+
+    result = {}
+    for private_key in private_keys:
+        with contextlib.suppress(Exception):
+            address = address_from_private(private_key)
+        if address is None:
+            raise ValueError(f"invalid private key: {private_key}")
+        if address_lowercase:
+            address = address.lower()
+        result[address] = private_key
+    return result
