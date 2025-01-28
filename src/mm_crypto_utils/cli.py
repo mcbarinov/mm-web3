@@ -1,9 +1,25 @@
-import sys
-from typing import NoReturn
+import os
+from pathlib import Path
 
-from mm_std import BaseConfig, print_json
+from mm_std import str_to_list
 
 
-def print_config_and_exit(config: BaseConfig, exclude: set[str] | None = None) -> NoReturn:
-    print_json(config.model_dump(exclude=exclude))
-    sys.exit(0)
+class ConfigValidators:
+    @staticmethod
+    def log_file(v: Path | None) -> Path | None:
+        if v is None:
+            return None
+        log_file = Path(v).expanduser()
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        log_file.touch(exist_ok=True)
+        if not log_file.is_file() or not os.access(log_file, os.W_OK):
+            raise ValueError(f"wrong log path: {v}")
+        return v
+
+    @staticmethod
+    def nodes(v: str | list[str] | None) -> list[str]:
+        if v is None:
+            return []
+        if isinstance(v, str):
+            return str_to_list(v, unique=True, remove_comments=True, split_line=True)
+        return v

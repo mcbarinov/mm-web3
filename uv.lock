@@ -604,7 +604,7 @@ wheels = [
 
 [[package]]
 name = "mm-crypto-utils"
-version = "0.0.9"
+version = "0.0.10"
 source = { editable = "." }
 dependencies = [
     { name = "loguru" },
@@ -625,7 +625,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "loguru", specifier = "~=0.7.3" },
-    { name = "mm-std", specifier = "~=0.1.14" },
+    { name = "mm-std", specifier = "~=0.1.15" },
 ]
 
 [package.metadata.requires-dev]
@@ -641,7 +641,7 @@ dev = [
 
 [[package]]
 name = "mm-std"
-version = "0.1.14"
+version = "0.1.15"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
@@ -653,7 +653,7 @@ dependencies = [
     { name = "rich" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/a9/105d633b28514e2db15b9a25dc2fc7f3764e7885416c063f0d15b1551109/mm_std-0.1.14-py3-none-any.whl", hash = "sha256:b7bba311a45b6ecb49d75e1924ed64da0f1293fd0405f515afe85be6b9d4b858", size = 14779 },
+    { url = "https://files.pythonhosted.org/packages/ee/b7/6c713eb013fd2d0b2d5dca0f96b1ecb25f464f43f00f172f0c8314c4e82a/mm_std-0.1.15-py3-none-any.whl", hash = "sha256:2138cd0606f85fa3b56172218b19dfdcfb192600a762bcb0b50e13dba3cf75fe", size = 14850 },
 ]
 
 [[package]]
