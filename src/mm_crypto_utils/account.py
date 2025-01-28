@@ -30,6 +30,10 @@ def read_addresses_from_file(source: Path, is_valid_address: Callable[[str], boo
 class AddressToPrivate(dict[str, str]):
     """Map of addresses to private keys."""
 
+    def contains_all_addresses(self, addresses: list[str]) -> bool:
+        """Check if all addresses are in the map."""
+        return set(addresses) == set(self.keys())
+
     @classmethod
     def __get_pydantic_core_schema__(cls, _source: type, _handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
         return core_schema.dict_schema(keys_schema=core_schema.str_schema(), values_schema=core_schema.str_schema(), strict=True)
