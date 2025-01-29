@@ -2,6 +2,7 @@ import os
 from collections.abc import Callable
 from pathlib import Path
 
+import pydash
 from mm_std import str_to_list
 
 from mm_crypto_utils.account import AddressToPrivate
@@ -31,6 +32,29 @@ class ConfigValidators:
             if isinstance(v, str):
                 return str_to_list(v, unique=True, remove_comments=True, split_line=True)
             return v
+
+        return validator
+
+    @staticmethod
+    def addresses(
+        unique: bool, lower: bool = False, is_address: Callable[[str], bool] | None = None
+    ) -> Callable[[str | list[str] | None], list[str]]:
+        def validator(v: str | list[str] | None) -> list[str]:
+            if v is None:
+                return []
+            if isinstance(v, str):
+                addresses = str_to_list(v, unique=True, remove_comments=True, split_line=True, lower=lower)
+            else:
+                addresses = [address.lower() if lower else address for address in v]
+
+            if is_address:
+                for address in addresses:
+                    if not is_address(address):
+                        raise ValueError(f"illegal address: {address}")
+
+            if unique:
+                return pydash.uniq(addresses)
+            return addresses
 
         return validator
 
