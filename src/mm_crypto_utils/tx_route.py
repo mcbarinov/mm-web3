@@ -6,7 +6,7 @@ from pathlib import Path
 import mm_std
 from pydantic import BaseModel
 
-from mm_crypto_utils.account import read_addresses_from_file
+from mm_crypto_utils.account import read_items_from_file
 
 
 class TxRoute(BaseModel):
@@ -38,7 +38,7 @@ class TxRoute(BaseModel):
     def from_files(
         addresses_from_file: Path,
         addresses_to_file: Path,
-        is_address_valid: Callable[[str], bool],
+        is_address: Callable[[str], bool],
         lowercase: bool = False,
     ) -> list[TxRoute]:
         addresses_from_file = addresses_from_file.expanduser()
@@ -50,8 +50,8 @@ class TxRoute(BaseModel):
         if not addresses_to_file.is_file():
             raise ValueError(f"addresses_to_file={addresses_to_file} is not a file")
 
-        addresses_from = read_addresses_from_file(addresses_from_file, is_address_valid, lowercase)
-        addresses_to = read_addresses_from_file(addresses_to_file, is_address_valid, lowercase)
+        addresses_from = read_items_from_file(addresses_from_file, is_address, lowercase)
+        addresses_to = read_items_from_file(addresses_to_file, is_address, lowercase)
         if len(addresses_from) != len(addresses_to):
             raise ValueError("len(addresses_from) != len(addresses_to)")
 

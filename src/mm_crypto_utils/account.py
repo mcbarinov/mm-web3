@@ -9,22 +9,27 @@ from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema
 
 
-def read_addresses_from_file(source: Path, is_valid_address: Callable[[str], bool], lowercase: bool = False) -> list[str]:
+def read_items_from_file(source: Path, is_valid: Callable[[str], bool], lowercase: bool = False) -> list[str]:
+    """Read items (addresses, private keys, etc.) from a file and validate them.
+    Raises:
+        ValueError: if the file cannot be read or any item is invalid.
+
+    """
     source = source.expanduser()
-    if not source.is_file():
+    if not source.is_file():  # TODO: check can  read from this file
         raise ValueError(f"{source} is not a file")
 
-    addresses = []
+    items = []
     data = source.read_text().strip()
     if lowercase:
         data = data.lower()
 
     for line in data.split("\n"):
-        if not is_valid_address(line):
+        if not is_valid(line):
             raise ValueError(f"illegal address in {source}: {line}")
-        addresses.append(line)
+        items.append(line)
 
-    return addresses
+    return items
 
 
 class AddressToPrivate(dict[str, str]):
