@@ -8,6 +8,8 @@ from mm_std import str_to_list
 from mm_crypto_utils.account import AddressToPrivate
 from mm_crypto_utils.tx_route import TxRoute
 
+type IsAddress = Callable[[str], bool]
+
 
 class ConfigValidators:
     @staticmethod
@@ -36,8 +38,19 @@ class ConfigValidators:
         return validator
 
     @staticmethod
+    def address(is_address: IsAddress, lower: bool = False) -> Callable[[str], str]:
+        def validator(v: str) -> str:
+            if not is_address(v):
+                raise ValueError(f"illegal address: {v}")
+            if lower:
+                return v.lower()
+            return v
+
+        return validator
+
+    @staticmethod
     def addresses(
-        unique: bool, lower: bool = False, is_address: Callable[[str], bool] | None = None
+        unique: bool, lower: bool = False, is_address: IsAddress | None = None
     ) -> Callable[[str | list[str] | None], list[str]]:
         def validator(v: str | list[str] | None) -> list[str]:
             if v is None:
@@ -69,7 +82,7 @@ class ConfigValidators:
         return validator
 
     @staticmethod
-    def routes(is_address: Callable[[str], bool]) -> Callable[[str | None], list[TxRoute]]:
+    def routes(is_address: IsAddress) -> Callable[[str | None], list[TxRoute]]:
         def validator(v: str | None) -> list[TxRoute]:
             return TxRoute.from_str(v, is_address) if v else []
 
