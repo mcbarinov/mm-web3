@@ -14,11 +14,11 @@ class TxRoute(BaseModel):
     to_address: str
 
     @staticmethod
-    def from_str(value: str | None, is_address_valid: Callable[[str], bool], lowercase: bool = False) -> list[TxRoute]:
+    def from_str(value: str | None, is_address_valid: Callable[[str], bool], to_lower: bool = False) -> list[TxRoute]:
         result: list[TxRoute] = []
         if value is None:
             return result
-        if lowercase:
+        if to_lower:
             value = value.lower()
         for line in mm_std.str_to_list(value, remove_comments=True):
             arr = line.split()
@@ -39,7 +39,7 @@ class TxRoute(BaseModel):
         addresses_from_file: Path,
         addresses_to_file: Path,
         is_address: Callable[[str], bool],
-        lowercase: bool = False,
+        to_lower: bool = False,
     ) -> list[TxRoute]:
         addresses_from_file = addresses_from_file.expanduser()
         addresses_to_file = addresses_to_file.expanduser()
@@ -50,8 +50,8 @@ class TxRoute(BaseModel):
         if not addresses_to_file.is_file():
             raise ValueError(f"addresses_to_file={addresses_to_file} is not a file")
 
-        addresses_from = read_items_from_file(addresses_from_file, is_address, lowercase)
-        addresses_to = read_items_from_file(addresses_to_file, is_address, lowercase)
+        addresses_from = read_items_from_file(addresses_from_file, is_address, to_lower)
+        addresses_to = read_items_from_file(addresses_to_file, is_address, to_lower)
         if len(addresses_from) != len(addresses_to):
             raise ValueError("len(addresses_from) != len(addresses_to)")
 

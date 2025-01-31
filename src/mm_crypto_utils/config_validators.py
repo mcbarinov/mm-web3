@@ -82,8 +82,8 @@ class ConfigValidators:
         return validator
 
     @staticmethod
-    def routes(is_address: IsAddress) -> Callable[[str | None], list[TxRoute]]:
+    def routes(is_address: IsAddress, to_lower: bool = False) -> Callable[[str | None], list[TxRoute]]:
         def validator(v: str | None) -> list[TxRoute]:
-            return TxRoute.from_str(v, is_address) if v else []
+            return TxRoute.from_str(v, is_address, to_lower=to_lower) if v else []
 
         return validator

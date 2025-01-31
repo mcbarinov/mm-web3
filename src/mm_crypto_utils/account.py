@@ -9,7 +9,7 @@ from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema
 
 
-def read_items_from_file(source: Path, is_valid: Callable[[str], bool], lowercase: bool = False) -> list[str]:
+def read_items_from_file(source: Path, is_valid: Callable[[str], bool], to_lower: bool = False) -> list[str]:
     """Read items (addresses, private keys, etc.) from a file and validate them.
     Raises:
         ValueError: if the file cannot be read or any item is invalid.
@@ -21,7 +21,7 @@ def read_items_from_file(source: Path, is_valid: Callable[[str], bool], lowercas
 
     items = []
     data = source.read_text().strip()
-    if lowercase:
+    if to_lower:
         data = data.lower()
 
     for line in data.split("\n"):
