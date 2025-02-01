@@ -5,6 +5,7 @@ from pathlib import Path
 import pydash
 from mm_std import str_to_list
 
+from mm_crypto_utils import calc_decimal_value, calc_int_expression
 from mm_crypto_utils.account import AddressToPrivate
 from mm_crypto_utils.tx_route import TxRoute
 
@@ -85,5 +86,23 @@ class ConfigValidators:
     def routes(is_address: IsAddress, to_lower: bool = False) -> Callable[[str | None], list[TxRoute]]:
         def validator(v: str | None) -> list[TxRoute]:
             return TxRoute.from_str(v, is_address, to_lower=to_lower) if v else []
+
+        return validator
+
+    @staticmethod
+    def valid_calc_int_expression(
+        var_name: str | None = None, suffix_decimals: dict[str, int] | None = None
+    ) -> Callable[[str], str]:
+        def validator(v: str) -> str:
+            calc_int_expression(v, var_value=123, var_name=var_name, suffix_decimals=suffix_decimals)
+            return v
+
+        return validator
+
+    @staticmethod
+    def valid_calc_decimal_value() -> Callable[[str], str]:
+        def validator(v: str) -> str:
+            calc_decimal_value(v)
+            return v
 
         return validator
