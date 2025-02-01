@@ -38,11 +38,11 @@ class ConfigValidators:
         return validator
 
     @staticmethod
-    def address(is_address: IsAddress, lower: bool = False) -> Callable[[str], str]:
+    def address(is_address: IsAddress, to_lower: bool = False) -> Callable[[str], str]:
         def validator(v: str) -> str:
             if not is_address(v):
                 raise ValueError(f"illegal address: {v}")
-            if lower:
+            if to_lower:
                 return v.lower()
             return v
 
@@ -50,15 +50,15 @@ class ConfigValidators:
 
     @staticmethod
     def addresses(
-        unique: bool, lower: bool = False, is_address: IsAddress | None = None
+        unique: bool, to_lower: bool = False, is_address: IsAddress | None = None
     ) -> Callable[[str | list[str] | None], list[str]]:
         def validator(v: str | list[str] | None) -> list[str]:
             if v is None:
                 return []
             if isinstance(v, str):
-                addresses = str_to_list(v, unique=True, remove_comments=True, split_line=True, lower=lower)
+                addresses = str_to_list(v, unique=True, remove_comments=True, split_line=True, lower=to_lower)
             else:
-                addresses = [address.lower() if lower else address for address in v]
+                addresses = [address.lower() if to_lower else address for address in v]
 
             if is_address:
                 for address in addresses:
