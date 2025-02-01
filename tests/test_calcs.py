@@ -2,7 +2,7 @@ from decimal import Decimal
 
 import pytest
 
-from mm_crypto_utils.calcs import calc_decimal_value, calc_int_expression, calc_int_with_suffix_decimals
+from mm_crypto_utils.calcs import VarInt, calc_decimal_value, calc_int_expression, calc_int_with_suffix_decimals
 
 
 def test_calc_decimal_expression():
@@ -24,7 +24,7 @@ def test_calc_int_expression():
     assert calc_int_expression("10 + 2 - 5") == 7
     assert calc_int_expression("10 - random(2,2)") == 8
     assert calc_int_expression("10gwei - random(2gwei,2gwei)", suffix_decimals=suffix_decimals) == 8000000000
-    assert calc_int_expression("1.5estimate + 1", var_value=10, var_name="estimate") == 16
+    assert calc_int_expression("1.5estimate + 1", VarInt("estimate", 10)) == 16
 
     with pytest.raises(ValueError):
         calc_int_expression("fff")
@@ -33,6 +33,4 @@ def test_calc_int_expression():
     with pytest.raises(ValueError):
         calc_int_expression("1.1gg")
     with pytest.raises(ValueError):
-        calc_int_expression("1.5eth", suffix_decimals=suffix_decimals, var_name="eth", var_value=10)
-    with pytest.raises(ValueError):
-        calc_int_expression("1.5base", suffix_decimals=suffix_decimals, var_name="base")
+        calc_int_expression("1.5eth", suffix_decimals=suffix_decimals, var=VarInt("eth", 10))

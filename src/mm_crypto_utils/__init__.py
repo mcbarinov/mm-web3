@@ -1,5 +1,6 @@
 from .account import AddressToPrivate as AddressToPrivate
 from .account import read_items_from_file as read_items_from_file
+from .calcs import VarInt as VarInt
 from .calcs import calc_decimal_value as calc_decimal_value
 from .calcs import calc_int_expression as calc_int_expression
 from .config_validators import ConfigValidators as ConfigValidators

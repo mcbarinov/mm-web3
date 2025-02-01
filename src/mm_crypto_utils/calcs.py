@@ -1,8 +1,20 @@
 import random
+from dataclasses import dataclass
 from decimal import Decimal
 
 from mm_std import random_decimal
 from mm_std.str import split_on_plus_minus_tokens
+
+
+@dataclass
+class VarInt:
+    name: str
+    value: int
+
+    def __post_init__(self) -> None:
+        self.name = self.name.lower()
+        if any(char.isspace() for char in self.name):
+            raise ValueError(f"var.name contains spaces: {self.name}")
 
 
 def calc_decimal_value(value: str) -> Decimal:
@@ -35,23 +47,15 @@ def calc_int_with_suffix_decimals(value: str, suffix_decimals: dict[str, int]) -
     raise ValueError(f"illegal value: {value}")
 
 
-def calc_int_expression(
-    expression: str, var_name: str | None = None, var_value: int | None = None, suffix_decimals: dict[str, int] | None = None
-) -> int:
+def calc_int_expression(expression: str, var: VarInt | None = None, suffix_decimals: dict[str, int] | None = None) -> int:
     if not isinstance(expression, str):
         raise TypeError(f"expression is not str: {expression}")
     expression = expression.lower().strip()
     if suffix_decimals is None:
         suffix_decimals = {}
     suffix_decimals = {k.lower(): v for k, v in suffix_decimals.items()}
-    if var_name is not None and var_value is None:
-        raise ValueError("var_value is not set")
-    if var_name is not None:
-        var_name = var_name.lower()
-        if any(char.isspace() for char in var_name):
-            raise ValueError(f"var_name contains spaces: {var_name}")
-        if var_name in suffix_decimals:
-            raise ValueError(f"var_name in suffix_decimals: {var_name}")
+    if var is not None and var.name in suffix_decimals:
+        raise ValueError(f"var.name in suffix_decimals: {var.name}")
 
     try:
         result = 0
@@ -63,10 +67,10 @@ def calc_int_expression(
                 item_value = int(item)
             elif suffix is not None:
                 item_value = calc_int_with_suffix_decimals(item, suffix_decimals)
-            elif var_name is not None and var_value is not None and item.endswith(var_name):
-                item = item.removesuffix(var_name)
+            elif var is not None and item.endswith(var.name):
+                item = item.removesuffix(var.name)
                 k = Decimal(item) if item else Decimal(1)
-                item_value = int(k * var_value)
+                item_value = int(k * var.value)
             elif item.startswith("random(") and item.endswith(")"):
                 item = item.lstrip("random(").rstrip(")")
                 arr = item.split(",")

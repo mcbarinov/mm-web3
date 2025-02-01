@@ -7,6 +7,7 @@ from mm_std import str_to_list
 
 from mm_crypto_utils import calc_decimal_value, calc_int_expression
 from mm_crypto_utils.account import AddressToPrivate
+from mm_crypto_utils.calcs import VarInt
 from mm_crypto_utils.tx_route import TxRoute
 
 type IsAddress = Callable[[str], bool]
@@ -94,7 +95,8 @@ class ConfigValidators:
         var_name: str | None = None, suffix_decimals: dict[str, int] | None = None
     ) -> Callable[[str], str]:
         def validator(v: str) -> str:
-            calc_int_expression(v, var_value=123, var_name=var_name, suffix_decimals=suffix_decimals)
+            var = VarInt(name=var_name, value=123) if var_name else None
+            calc_int_expression(v, var=var, suffix_decimals=suffix_decimals)
             return v
 
         return validator
