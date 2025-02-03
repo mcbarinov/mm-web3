@@ -3,17 +3,49 @@ from collections.abc import Callable
 from pathlib import Path
 
 import pydash
-from mm_std import str_to_list
+from mm_std import Err, str_to_list
 
 from mm_crypto_utils import calc_decimal_value, calc_int_expression
 from mm_crypto_utils.account import AddressToPrivate
 from mm_crypto_utils.calcs import VarInt
+from mm_crypto_utils.proxy import fetch_proxies
 from mm_crypto_utils.tx_route import TxRoute
 
 type IsAddress = Callable[[str], bool]
 
 
 class ConfigValidators:
+    @staticmethod
+    def proxies() -> Callable[[str | list[str] | None], list[str]]:
+        def validator(v: str | list[str] | None) -> list[str]:
+            if v is None or not v:
+                return []
+            result = []
+            lines = str_to_list(v, unique=True, remove_comments=True) if isinstance(v, str) else v
+            for line in lines:
+                if line.startswith("url:"):
+                    url = line.removeprefix("url:").strip()
+                    res = fetch_proxies(url)
+                    if isinstance(res, Err):
+                        raise ValueError(f"Can't get proxies: {res.err}")
+                    result += res.ok
+                elif line.startswith("env_url:"):
+                    env_var = line.removeprefix("env_url:").strip()
+                    url = os.getenv(env_var)
+                    res = fetch_proxies(url)
+                    if isinstance(res, Err):
+                        raise ValueError(f"Can't get proxies: {res.err}")
+                    result += res.ok
+                elif line.startswith("file:"):
+                    path = line.removeprefix("file:").strip()
+                    result += _read_lines_from_file(path)
+                else:
+                    result.append(line)
+
+            return pydash.uniq(result)
+
+        return validator
+
     @staticmethod
     def log_file() -> Callable[[Path | None], Path | None]:
         def validator(v: Path | None) -> Path | None:
@@ -108,3 +140,10 @@ class ConfigValidators:
             return v
 
         return validator
+
+
+def _read_lines_from_file(path: str) -> list[str]:
+    try:
+        return Path(path).expanduser().read_text().strip().splitlines()
+    except Exception as e:
+        raise ValueError from e
