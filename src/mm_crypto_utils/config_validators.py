@@ -110,7 +110,16 @@ class ConfigValidators:
         def validator(v: str | list[str] | None) -> AddressToPrivate:
             if v is None:
                 return AddressToPrivate()
-            private_keys = str_to_list(v, unique=True, remove_comments=True) if isinstance(v, str) else v
+
+            private_keys = []
+            lines = str_to_list(v, unique=True, remove_comments=True) if isinstance(v, str) else v
+            for line in lines:
+                if line.startswith("file:"):
+                    path = line.removeprefix("file:").strip()
+                    private_keys += _read_lines_from_file(path)
+                else:
+                    private_keys.append(line)
+
             return AddressToPrivate.from_list(private_keys, address_from_private)
 
         return validator
