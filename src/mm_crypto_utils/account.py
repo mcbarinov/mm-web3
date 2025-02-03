@@ -77,10 +77,11 @@ class AddressToPrivate(dict[str, str]):
         """
         result = AddressToPrivate()
         for private_key in private_keys:
+            address = None
             with contextlib.suppress(Exception):
                 address = address_from_private(private_key)
             if address is None:
-                raise ValueError(f"invalid private key: {private_key}")
+                raise ValueError("invalid private key")
             result[address] = private_key
         return result
 

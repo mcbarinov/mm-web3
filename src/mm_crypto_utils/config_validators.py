@@ -27,7 +27,7 @@ class ConfigValidators:
                 raise ValueError("routes is empty")
 
             result = []
-            lines = str_to_list(v, unique=True, remove_comments=True) if isinstance(v, str) else v
+            lines = str_to_list(v, remove_comments=True) if isinstance(v, str) else v
             for line in lines:
                 if line.startswith("file:"):
                     arr = line.removeprefix("file:").strip().split()
