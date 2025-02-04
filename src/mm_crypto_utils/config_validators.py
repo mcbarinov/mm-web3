@@ -21,14 +21,10 @@ class TxRoute(BaseModel):
 
 class ConfigValidators:
     @staticmethod
-    def routes(is_address: IsAddress, to_lower: bool = False) -> Callable[[str | None], list[TxRoute]]:
-        def validator(v: str | list[str] | None) -> list[TxRoute]:
-            if v is None or not v:
-                raise ValueError("routes is empty")
-
+    def routes(is_address: IsAddress, to_lower: bool = False) -> Callable[[str], list[TxRoute]]:
+        def validator(v: str) -> list[TxRoute]:
             result = []
-            lines = str_to_list(v, remove_comments=True) if isinstance(v, str) else v
-            for line in lines:
+            for line in str_to_list(v, remove_comments=True):
                 if line.startswith("file:"):
                     arr = line.removeprefix("file:").strip().split()
                     if len(arr) != 2:
@@ -56,18 +52,18 @@ class ConfigValidators:
                 if not is_address(route.to_address):
                     raise ValueError(f"illegal address: {route.to_address}")
 
+            if not result:
+                raise ValueError("routes is empty")
+
             return result
 
         return validator
 
     @staticmethod
-    def proxies() -> Callable[[str | list[str] | None], list[str]]:
-        def validator(v: str | list[str] | None) -> list[str]:
-            if v is None or not v:
-                return []
+    def proxies() -> Callable[[str], list[str]]:
+        def validator(v: str) -> list[str]:
             result = []
-            lines = str_to_list(v, unique=True, remove_comments=True) if isinstance(v, str) else v
-            for line in lines:
+            for line in str_to_list(v, unique=True, remove_comments=True):
                 if line.startswith("url:"):
                     url = line.removeprefix("url:").strip()
                     res = fetch_proxies(url)
@@ -94,10 +90,8 @@ class ConfigValidators:
         return validator
 
     @staticmethod
-    def log_file() -> Callable[[Path | None], Path | None]:
-        def validator(v: Path | None) -> Path | None:
-            if v is None:
-                return None
+    def log_file() -> Callable[[Path], Path]:
+        def validator(v: Path) -> Path:
             log_file = Path(v).expanduser()
             log_file.parent.mkdir(parents=True, exist_ok=True)
             log_file.touch(exist_ok=True)
@@ -108,13 +102,9 @@ class ConfigValidators:
         return validator
 
     @staticmethod
-    def nodes() -> Callable[[str | list[str] | None], list[str]]:
-        def validator(v: str | list[str] | None) -> list[str]:
-            if v is None:
-                return []
-            if isinstance(v, str):
-                return str_to_list(v, unique=True, remove_comments=True, split_line=True)
-            return v
+    def nodes() -> Callable[[str], list[str]]:
+        def validator(v: str) -> list[str]:
+            return str_to_list(v, unique=True, remove_comments=True)
 
         return validator
 
@@ -130,37 +120,22 @@ class ConfigValidators:
         return validator
 
     @staticmethod
-    def addresses(
-        unique: bool, to_lower: bool = False, is_address: IsAddress | None = None
-    ) -> Callable[[str | list[str] | None], list[str]]:
-        def validator(v: str | list[str] | None) -> list[str]:
-            if v is None:
-                return []
-            if isinstance(v, str):
-                addresses = str_to_list(v, unique=True, remove_comments=True, split_line=True, lower=to_lower)
-            else:
-                addresses = [address.lower() if to_lower else address for address in v]
-
+    def addresses(unique: bool, to_lower: bool = False, is_address: IsAddress | None = None) -> Callable[[str], list[str]]:
+        def validator(v: str) -> list[str]:
+            addresses = str_to_list(v, unique=unique, remove_comments=True, lower=to_lower)
             if is_address:
                 for address in addresses:
                     if not is_address(address):
                         raise ValueError(f"illegal address: {address}")
-
-            if unique:
-                return pydash.uniq(addresses)
             return addresses
 
         return validator
 
     @staticmethod
-    def private_keys(address_from_private: Callable[[str], str]) -> Callable[[str | list[str] | None], AddressToPrivate]:
-        def validator(v: str | list[str] | None) -> AddressToPrivate:
-            if v is None:
-                return AddressToPrivate()
-
+    def private_keys(address_from_private: Callable[[str], str]) -> Callable[[str], AddressToPrivate]:
+        def validator(v: str) -> AddressToPrivate:
             private_keys = []
-            lines = str_to_list(v, unique=True, remove_comments=True) if isinstance(v, str) else v
-            for line in lines:
+            for line in str_to_list(v, unique=True, remove_comments=True):
                 if line.startswith("file:"):
                     path = line.removeprefix("file:").strip()
                     private_keys += _read_lines_from_file(path)
