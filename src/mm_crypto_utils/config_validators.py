@@ -18,6 +18,10 @@ class TxRoute(BaseModel):
     from_address: str
     to_address: str
 
+    @property
+    def log_prefix(self) -> str:
+        return f"{self.from_address}->{self.to_address}"
+
 
 class ConfigValidators:
     @staticmethod
