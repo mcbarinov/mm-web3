@@ -18,7 +18,7 @@ type IsAddress = Callable[[str], bool]
 class Transfer(BaseModel):
     from_address: str
     to_address: str
-    value: str = ""
+    value: str  # can be empty string
 
     @property
     def log_prefix(self) -> str:
@@ -45,7 +45,9 @@ class ConfigValidators:
                     result.append(Transfer(from_address=arr[0], to_address=arr[1], value=arr[2] if len(arr) > 2 else ""))
 
             if to_lower:
-                result = [Transfer(from_address=r.from_address.lower(), to_address=r.to_address.lower()) for r in result]
+                result = [
+                    Transfer(from_address=r.from_address.lower(), to_address=r.to_address.lower(), value=r.value) for r in result
+                ]
 
             for route in result:
                 if not is_address(route.from_address):
