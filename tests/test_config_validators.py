@@ -17,4 +17,4 @@ def test_transfers():
     assert len(res) == 2
     assert res[1].from_address == "0x92FC94382c8d878121b5DAe90dBBAf5f61DF4a1d"
     assert res[1].to_address == "0x7Ff459eC8c2C91f5367ACf18a5583a166B653532"
-    assert res[1].value_expression == "0.1balance-2eth"
+    assert res[1].value == "0.1balance-2eth"

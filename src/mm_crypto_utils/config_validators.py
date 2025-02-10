@@ -18,7 +18,7 @@ type IsAddress = Callable[[str], bool]
 class Transfer(BaseModel):
     from_address: str
     to_address: str
-    value_expression: str = ""
+    value: str = ""
 
     @property
     def log_prefix(self) -> str:
@@ -36,17 +36,13 @@ class ConfigValidators:
                         arr = file_line.split()
                         if len(arr) < 2 or len(arr) > 3:
                             raise ValueError(f"illegal file_line: {file_line}")
-                        result.append(
-                            Transfer(from_address=arr[0], to_address=arr[1], value_expression=arr[2] if len(arr) > 2 else "")
-                        )
+                        result.append(Transfer(from_address=arr[0], to_address=arr[1], value=arr[2] if len(arr) > 2 else ""))
 
                 else:
                     arr = line.split()
                     if len(arr) < 2 or len(arr) > 3:
                         raise ValueError(f"illegal line: {line}")
-                    result.append(
-                        Transfer(from_address=arr[0], to_address=arr[1], value_expression=arr[2] if len(arr) > 2 else "")
-                    )
+                    result.append(Transfer(from_address=arr[0], to_address=arr[1], value=arr[2] if len(arr) > 2 else ""))
 
             if to_lower:
                 result = [Transfer(from_address=r.from_address.lower(), to_address=r.to_address.lower()) for r in result]

@@ -1,6 +1,6 @@
 [project]
 name = "mm-crypto-utils"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
@@ -27,7 +27,7 @@ dev-dependencies = [
 python_version = "3.13"
 warn_no_return = false
 strict = true
-exclude = ["^tests/", "^tmp/"]
+exclude = '^(tests|tmp)/'
 
 [tool.ruff]
 line-length = 130
