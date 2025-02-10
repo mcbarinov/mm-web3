@@ -105,9 +105,12 @@ class ConfigValidators:
         return validator
 
     @staticmethod
-    def nodes() -> Callable[[str], list[str]]:
+    def nodes(allow_empty: bool = False) -> Callable[[str], list[str]]:
         def validator(v: str) -> list[str]:
-            return str_to_list(v, unique=True, remove_comments=True)
+            nodes = str_to_list(v, unique=True, remove_comments=True)
+            if not allow_empty and not nodes:
+                raise ValueError("empty nodes")
+            return nodes
 
         return validator
 
