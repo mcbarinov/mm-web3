@@ -4,7 +4,7 @@ from .calcs import VarInt as VarInt
 from .calcs import calc_decimal_value as calc_decimal_value
 from .calcs import calc_int_expression as calc_int_expression
 from .config_validators import ConfigValidators as ConfigValidators
-from .config_validators import TxRoute as TxRoute
+from .config_validators import Transfer as Transfer
 from .log import get_log_prefix as get_log_prefix
 from .log import init_logger as init_logger
 from .node import Nodes as Nodes

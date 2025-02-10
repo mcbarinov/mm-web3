@@ -10,13 +10,15 @@ from mm_crypto_utils import calc_decimal_value, calc_int_expression
 from mm_crypto_utils.account import AddressToPrivate
 from mm_crypto_utils.calcs import VarInt
 from mm_crypto_utils.proxy import fetch_proxies
+from mm_crypto_utils.utils import read_lines_from_file
 
 type IsAddress = Callable[[str], bool]
 
 
-class TxRoute(BaseModel):
+class Transfer(BaseModel):
     from_address: str
     to_address: str
+    value_expression: str = ""
 
     @property
     def log_prefix(self) -> str:
@@ -25,30 +27,29 @@ class TxRoute(BaseModel):
 
 class ConfigValidators:
     @staticmethod
-    def routes(is_address: IsAddress, to_lower: bool = False) -> Callable[[str], list[TxRoute]]:
-        def validator(v: str) -> list[TxRoute]:
+    def transfers(is_address: IsAddress, to_lower: bool = False) -> Callable[[str], list[Transfer]]:
+        def validator(v: str) -> list[Transfer]:
             result = []
-            for line in str_to_list(v, remove_comments=True):
+            for line in str_to_list(v, remove_comments=True):  # don't use to_lower here because it can be a file: /To/Path.txt
                 if line.startswith("file:"):
-                    arr = line.removeprefix("file:").strip().split()
-                    if len(arr) != 2:
-                        raise ValueError(f"illegal line in routes: {line}")
-                    from_addresses = _read_lines_from_file(arr[0])
-                    to_addresses = _read_lines_from_file(arr[1])
-                    if len(from_addresses) != len(to_addresses):
-                        raise ValueError(f"len(from_addresses) != len(to_addresses) for line: {line}")
-                    result += [
-                        TxRoute(from_address=from_address, to_address=to_address)
-                        for from_address, to_address in zip(from_addresses, to_addresses, strict=True)
-                    ]
+                    for file_line in read_lines_from_file(line.removeprefix("file:").strip()):
+                        arr = file_line.split()
+                        if len(arr) < 2 or len(arr) > 3:
+                            raise ValueError(f"illegal file_line: {file_line}")
+                        result.append(
+                            Transfer(from_address=arr[0], to_address=arr[1], value_expression=arr[2] if len(arr) > 2 else "")
+                        )
+
                 else:
                     arr = line.split()
-                    if len(arr) != 2:
-                        raise ValueError(f"illegal line in routes: {line}")
-                    result.append(TxRoute(from_address=arr[0], to_address=arr[1]))
+                    if len(arr) < 2 or len(arr) > 3:
+                        raise ValueError(f"illegal line: {line}")
+                    result.append(
+                        Transfer(from_address=arr[0], to_address=arr[1], value_expression=arr[2] if len(arr) > 2 else "")
+                    )
 
             if to_lower:
-                result = [TxRoute(from_address=r.from_address.lower(), to_address=r.to_address.lower()) for r in result]
+                result = [Transfer(from_address=r.from_address.lower(), to_address=r.to_address.lower()) for r in result]
 
             for route in result:
                 if not is_address(route.from_address):
@@ -57,7 +58,7 @@ class ConfigValidators:
                     raise ValueError(f"illegal address: {route.to_address}")
 
             if not result:
-                raise ValueError("routes is empty")
+                raise ValueError("empty")
 
             return result
 
@@ -85,7 +86,7 @@ class ConfigValidators:
                     result += res.ok
                 elif line.startswith("file:"):
                     path = line.removeprefix("file:").strip()
-                    result += _read_lines_from_file(path)
+                    result += read_lines_from_file(path)
                 else:
                     result.append(line)
 
@@ -126,12 +127,20 @@ class ConfigValidators:
     @staticmethod
     def addresses(unique: bool, to_lower: bool = False, is_address: IsAddress | None = None) -> Callable[[str], list[str]]:
         def validator(v: str) -> list[str]:
-            addresses = str_to_list(v, unique=unique, remove_comments=True, lower=to_lower)
+            result = []
+            for line in str_to_list(v, unique=unique, remove_comments=True, lower=to_lower):
+                if line.startswith("file:"):
+                    path = line.removeprefix("file:").strip()
+                    result += read_lines_from_file(path, to_lower=to_lower)
+                else:
+                    result.append(line)
+            result = pydash.uniq(result)
+
             if is_address:
-                for address in addresses:
+                for address in result:
                     if not is_address(address):
                         raise ValueError(f"illegal address: {address}")
-            return addresses
+            return result
 
         return validator
 
@@ -142,7 +151,7 @@ class ConfigValidators:
             for line in str_to_list(v, unique=True, remove_comments=True):
                 if line.startswith("file:"):
                     path = line.removeprefix("file:").strip()
-                    private_keys += _read_lines_from_file(path)
+                    private_keys += read_lines_from_file(path)
                 else:
                     private_keys.append(line)
 
@@ -168,11 +177,3 @@ class ConfigValidators:
             return v
 
         return validator
-
-
-def _read_lines_from_file(path: str) -> list[str]:
-    try:
-        lines = Path(path).expanduser().read_text().strip().splitlines()
-        return [line.strip() for line in lines if line.strip()]
-    except Exception as e:
-        raise ValueError from e
