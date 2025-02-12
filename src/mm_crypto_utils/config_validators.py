@@ -129,13 +129,16 @@ class ConfigValidators:
     def addresses(unique: bool, to_lower: bool = False, is_address: IsAddress | None = None) -> Callable[[str], list[str]]:
         def validator(v: str) -> list[str]:
             result = []
-            for line in str_to_list(v, unique=unique, remove_comments=True, lower=to_lower):
-                if line.startswith("file:"):
+            for line in str_to_list(v, unique=unique, remove_comments=True):
+                if line.startswith("file:"):  # don't use to_lower here because it can be a file: /To/Path.txt
                     path = line.removeprefix("file:").strip()
                     result += read_lines_from_file(path, to_lower=to_lower)
                 else:
                     result.append(line)
             result = pydash.uniq(result)
+
+            if to_lower:
+                result = [r.lower() for r in result]
 
             if is_address:
                 for address in result:
