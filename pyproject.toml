@@ -1,10 +1,10 @@
 [project]
 name = "mm-crypto-utils"
-version = "0.2.7"
+version = "0.2.8"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
-    "mm-std>=0.3.6",
+    "mm-std>=0.3.9",
     "loguru>=0.7.3",
 ]
 
@@ -16,7 +16,7 @@ build-backend = "hatchling.build"
 dev-dependencies = [
     "pytest~=8.3.5",
     "pytest-xdist~=3.6.1",
-    "ruff~=0.9.10",
+    "ruff~=0.10.0",
     "pip-audit~=2.8.0",
     "bandit~=1.8.3",
     "mypy~=1.15.0",
