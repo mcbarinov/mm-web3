@@ -44,7 +44,7 @@ def is_valid_proxy_url(proxy_url: str) -> bool:
     Check if the given URL is a valid proxy URL.
 
     A valid proxy URL must have:
-      - A scheme in {"http", "https", "socks4", "socks5", "socks5h"}.
+      - A scheme in {"http", "https", "socks4", "socks5", "zsocks5h"}.
       - A non-empty hostname.
       - A specified port.
       - No extra path components (the path must be empty or "/").

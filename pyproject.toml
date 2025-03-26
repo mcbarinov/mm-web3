@@ -1,10 +1,10 @@
 [project]
 name = "mm-crypto-utils"
-version = "0.2.9"
+version = "0.2.10"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
-    "mm-std>=0.3.14",
+    "mm-std>=0.3.17",
     "loguru>=0.7.3",
 ]
 
