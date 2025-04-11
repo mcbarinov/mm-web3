@@ -6,6 +6,7 @@ from .calcs import calc_int_expression as calc_int_expression
 from .config_validators import ConfigValidators as ConfigValidators
 from .config_validators import Transfer as Transfer
 from .constants import Network as Network
+from .constants import NetworkType as NetworkType
 from .log import get_log_prefix as get_log_prefix
 from .log import init_logger as init_logger
 from .node import Nodes as Nodes
