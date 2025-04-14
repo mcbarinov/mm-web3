@@ -637,7 +637,7 @@ wheels = [
 
 [[package]]
 name = "mm-crypto-utils"
-version = "0.2.12"
+version = "0.2.13"
 source = { editable = "." }
 dependencies = [
     { name = "loguru" },
@@ -658,7 +658,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "loguru", specifier = ">=0.7.3" },
-    { name = "mm-std", specifier = ">=0.3.22" },
+    { name = "mm-std", specifier = ">=0.3.29" },
 ]
 
 [package.metadata.requires-dev]
@@ -666,7 +666,7 @@ dev = [
     { name = "bandit", specifier = "~=1.8.3" },
     { name = "eth-account", specifier = ">=0.13.6" },
     { name = "mypy", specifier = "~=1.15.0" },
-    { name = "pip-audit", specifier = "~=2.8.0" },
+    { name = "pip-audit", specifier = "~=2.9.0" },
     { name = "pytest", specifier = "~=8.3.5" },
     { name = "pytest-xdist", specifier = "~=3.6.1" },
     { name = "ruff", specifier = "~=0.11.5" },
@@ -674,7 +674,7 @@ dev = [
 
 [[package]]
 name = "mm-std"
-version = "0.3.22"
+version = "0.3.29"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -689,7 +689,7 @@ dependencies = [
     { name = "tomlkit" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/83/0f/138c366eac0a77f9ef512a6959f543e7b62d9c3d30eba6c4bed13b067cbc/mm_std-0.3.22-py3-none-any.whl", hash = "sha256:8e3c8fa21d3ca317d167d5b8bf626257f8a726219f2b53b19ef6cfca0c9b2083", size = 22274 },
+    { url = "https://files.pythonhosted.org/packages/da/9e/8770e2e05e7276307c9159148bb034addf735d33937fdae904ff2df4df7f/mm_std-0.3.29-py3-none-any.whl", hash = "sha256:35904c4e891d8ee6ad47dcb847bd3e5124c595ba284e46d3ad00b7d3cbf89256", size = 26542 },
 ]
 
 [[package]]
@@ -872,7 +872,7 @@ wheels = [
 
 [[package]]
 name = "pip-audit"
-version = "2.8.0"
+version = "2.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cachecontrol", extra = ["filecache"] },
@@ -885,9 +885,9 @@ dependencies = [
     { name = "rich" },
     { name = "toml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e8/c8/44ccea85bd2024f1ebe55eb6cdaf1f2183359176689eed3c0b01926c24ad/pip_audit-2.8.0.tar.gz", hash = "sha256:9816cbd94de6f618a8965c117433006b3d565a708dc05d5a7be47ab65b66fa05", size = 51073 }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/7f/28fad19a9806f796f13192ab6974c07c4a04d9cbb8e30dd895c3c11ce7ee/pip_audit-2.9.0.tar.gz", hash = "sha256:0b998410b58339d7a231e5aa004326a294e4c7c6295289cdc9d5e1ef07b1f44d", size = 52089 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/11/0c/be5c42643284b2cfc5d9d36b576b7465268a163bd7df481a3979a3d87a0b/pip_audit-2.8.0-py3-none-any.whl", hash = "sha256:200f50d56cb6fba3a9189c20d53250354f72f161d63b6ef77ae5de2b53044566", size = 57002 },
+    { url = "https://files.pythonhosted.org/packages/43/9e/f4dfd9d3dadb6d6dc9406f1111062f871e2e248ed7b584cca6020baf2ac1/pip_audit-2.9.0-py3-none-any.whl", hash = "sha256:348b16e60895749a0839875d7cc27ebd692e1584ebe5d5cb145941c8e25a80bd", size = 58634 },
 ]
 
 [[package]]
