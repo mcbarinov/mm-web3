@@ -17,5 +17,5 @@ async def retry_node_call[T](
         res = await func(node, proxy=proxy, **kwargs)
         logs.append({"node": node, "proxy": proxy, "result": res.dict()})
         if res.is_ok():
-            return DataResult(ok=res.unwrap(), data={"retry_logs": logs})
+            return DataResult(ok=res.unwrap(), data={"retry_logs": logs}, ok_is_none=True)
     return DataResult(err=res.unwrap_err(), data={"retry_logs": logs})
