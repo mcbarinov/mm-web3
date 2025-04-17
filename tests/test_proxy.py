@@ -34,3 +34,9 @@ async def test_fetch_proxies(proxies_url):
     res = await proxy.fetch_proxies(proxies_url, timeout=5)
     assert res.is_ok()
     assert len(res.unwrap()) > 10
+
+
+async def test_fetch_proxies_sync(proxies_url):
+    res = proxy.fetch_proxies_sync(proxies_url, timeout=5)
+    assert res.is_ok()
+    assert len(res.unwrap()) > 10

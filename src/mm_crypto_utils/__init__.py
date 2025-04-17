@@ -12,7 +12,9 @@ from .log import init_logger as init_logger
 from .node import Nodes as Nodes
 from .node import random_node as random_node
 from .proxy import Proxies as Proxies
+from .proxy import fetch_proxies as fetch_proxies
 from .proxy import fetch_proxies_or_fatal as fetch_proxies_or_fatal
+from .proxy import fetch_proxies_sync as fetch_proxies_sync
 from .proxy import random_proxy as random_proxy
 from .retry import retry_with_node_and_proxy as retry_with_node_and_proxy
 from .retry import retry_with_proxy as retry_with_proxy

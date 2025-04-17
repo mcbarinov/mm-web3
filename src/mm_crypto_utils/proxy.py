@@ -1,9 +1,8 @@
-import asyncio
 from collections.abc import Sequence
 from urllib.parse import urlparse
 
 import pydash
-from mm_std import Result, fatal, http_request, random_str_choice
+from mm_std import Result, fatal, http_request, http_request_sync, random_str_choice
 
 type Proxies = str | Sequence[str] | None
 
@@ -38,11 +37,26 @@ async def fetch_proxies(proxies_url: str, timeout: float = 5) -> Result[list[str
 
 
 def fetch_proxies_sync(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
-    return asyncio.run(fetch_proxies(proxies_url, timeout))
+    res = http_request_sync(proxies_url, timeout=timeout)
+    if res.is_error():
+        return res.to_result_failure()
+
+    proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
+    proxies = pydash.uniq(proxies)
+    for proxy in proxies:
+        if not is_valid_proxy_url(proxy):
+            return res.to_result_failure(f"Invalid proxy URL: {proxy}")
+
+    if not proxies:
+        return res.to_result_failure("No valid proxies found")
+    return res.to_result_success(proxies)
 
 
 def fetch_proxies_or_fatal_sync(proxies_url: str, timeout: float = 5) -> list[str]:
-    return asyncio.run(fetch_proxies_or_fatal(proxies_url, timeout))
+    res = fetch_proxies_sync(proxies_url, timeout=timeout)
+    if res.is_error():
+        fatal(f"Can't get proxies: {res.error}")
+    return res.unwrap()
 
 
 def is_valid_proxy_url(proxy_url: str) -> bool:
