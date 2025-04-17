@@ -1,4 +1,9 @@
+import pytest
+
+from mm_crypto_utils import proxy
 from mm_crypto_utils.proxy import is_valid_proxy_url
+
+pytestmark = pytest.mark.asyncio
 
 
 def test_valid_proxy_urls():
@@ -23,3 +28,9 @@ def test_invalid_proxy_urls():
     ]
     for url in invalid_urls:
         assert not is_valid_proxy_url(url), f"URL should be invalid: {url}"
+
+
+async def test_fetch_proxies(proxies_url):
+    res = await proxy.fetch_proxies(proxies_url, timeout=5)
+    assert res.is_ok()
+    assert len(res.unwrap()) > 10

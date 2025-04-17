@@ -19,7 +19,6 @@ async def test_retry_with_node_and_proxy_success_on_first_try():
     assert len(result.extra["retry_logs"]) == 1
 
 
-@pytest.mark.anyio
 async def test_retry_with_node_and_proxy_success_on_retry():
     attempts = []
 
