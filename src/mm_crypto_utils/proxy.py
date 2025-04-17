@@ -24,17 +24,17 @@ async def fetch_proxies(proxies_url: str, timeout: float = 5) -> Result[list[str
     """Fetch proxies from the given url. Response is a list of proxies, one per line. Each proxy must be valid."""
     res = await http_request(proxies_url, timeout=timeout)
     if res.is_error():
-        return res.to_result_err()
+        return res.to_result_failure()
 
     proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
     proxies = pydash.uniq(proxies)
     for proxy in proxies:
         if not is_valid_proxy_url(proxy):
-            return res.to_result_err(f"Invalid proxy URL: {proxy}")
+            return res.to_result_failure(f"Invalid proxy URL: {proxy}")
 
     if not proxies:
-        return res.to_result_err("No valid proxies found")
-    return res.to_result_ok(proxies)
+        return res.to_result_failure("No valid proxies found")
+    return res.to_result_success(proxies)
 
 
 def fetch_proxies_sync(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
