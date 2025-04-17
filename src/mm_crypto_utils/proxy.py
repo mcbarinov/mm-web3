@@ -1,8 +1,9 @@
+import asyncio
 from collections.abc import Sequence
 from urllib.parse import urlparse
 
 import pydash
-from mm_std import Err, Ok, Result, fatal, hr, random_str_choice
+from mm_std import Result, fatal, http_request, random_str_choice
 
 type Proxies = str | Sequence[str] | None
 
@@ -11,32 +12,37 @@ def random_proxy(proxies: Proxies) -> str | None:
     return random_str_choice(proxies)
 
 
-def fetch_proxies_or_fatal(proxies_url: str, timeout: float = 10) -> list[str]:
+async def fetch_proxies_or_fatal(proxies_url: str, timeout: float = 5) -> list[str]:
     """Fetch proxies from the given url. If it can't fetch, exit with error."""
-    try:
-        res = hr(proxies_url, timeout=timeout)
-        if res.is_error():
-            fatal(f"Can't get proxies: {res.error}")
-        proxies = [p.strip() for p in res.body.splitlines() if p.strip()]
-        return pydash.uniq(proxies)
-    except Exception as err:
-        fatal(f"Can't get  proxies from the url: {err}")
+    res = await fetch_proxies(proxies_url, timeout=timeout)
+    if res.is_error():
+        fatal(f"Can't get proxies: {res.error}")
+    return res.unwrap()
 
 
-def fetch_proxies(proxies_url: str) -> Result[list[str]]:
-    """Fetch proxies from the given url. If it can't fetch, return error."""
-    try:
-        res = hr(proxies_url, timeout=10)
-        if res.is_error():
-            return Err(f"Can't get proxies: {res.error}")
-        proxies = [p.strip() for p in res.body.splitlines() if p.strip()]
-        proxies = pydash.uniq(proxies)
-        for proxy in proxies:
-            if not is_valid_proxy_url(proxy):
-                return Err(f"Invalid proxy URL: {proxy} for the source: {proxies_url}")
-        return Ok(proxies)
-    except Exception as err:
-        return Err(f"Can't get  proxies from the url: {err}")
+async def fetch_proxies(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
+    """Fetch proxies from the given url. Response is a list of proxies, one per line. Each proxy must be valid."""
+    res = await http_request(proxies_url, timeout=timeout)
+    if res.is_error():
+        return res.to_result_err()
+
+    proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
+    proxies = pydash.uniq(proxies)
+    for proxy in proxies:
+        if not is_valid_proxy_url(proxy):
+            return res.to_result_err(f"Invalid proxy URL: {proxy}")
+
+    if not proxies:
+        return res.to_result_err("No valid proxies found")
+    return res.to_result_ok(proxies)
+
+
+def fetch_proxies_sync(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
+    return asyncio.run(fetch_proxies(proxies_url, timeout))
+
+
+def fetch_proxies_or_fatal_sync(proxies_url: str, timeout: float = 5) -> list[str]:
+    return asyncio.run(fetch_proxies_or_fatal(proxies_url, timeout))
 
 
 def is_valid_proxy_url(proxy_url: str) -> bool:

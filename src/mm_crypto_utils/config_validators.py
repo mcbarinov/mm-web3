@@ -3,13 +3,13 @@ from collections.abc import Callable
 from pathlib import Path
 
 import pydash
-from mm_std import Err, str_to_list
+from mm_std import str_to_list
 from pydantic import BaseModel
 
 from mm_crypto_utils import calc_decimal_value, calc_int_expression
 from mm_crypto_utils.account import AddressToPrivate
 from mm_crypto_utils.calcs import VarInt
-from mm_crypto_utils.proxy import fetch_proxies
+from mm_crypto_utils.proxy import fetch_proxies_sync
 from mm_crypto_utils.utils import read_lines_from_file
 
 type IsAddress = Callable[[str], bool]
@@ -69,19 +69,19 @@ class ConfigValidators:
             for line in str_to_list(v, unique=True, remove_comments=True):
                 if line.startswith("url:"):
                     url = line.removeprefix("url:").strip()
-                    res = fetch_proxies(url)
-                    if isinstance(res, Err):
-                        raise ValueError(f"Can't get proxies: {res.err}")
-                    result += res.ok
+                    res = fetch_proxies_sync(url)
+                    if res.is_error():
+                        raise ValueError(f"Can't get proxies: {res.unwrap_error()}")
+                    result += res.unwrap()
                 elif line.startswith("env_url:"):
                     env_var = line.removeprefix("env_url:").strip()
                     url = os.getenv(env_var) or ""
                     if not url:
                         raise ValueError(f"missing env var: {env_var}")
-                    res = fetch_proxies(url)
-                    if isinstance(res, Err):
-                        raise ValueError(f"Can't get proxies: {res.err}")
-                    result += res.ok
+                    res = fetch_proxies_sync(url)
+                    if res.is_error():
+                        raise ValueError(f"Can't get proxies: {res.unwrap_error()}")
+                    result += res.unwrap()
                 elif line.startswith("file:"):
                     path = line.removeprefix("file:").strip()
                     result += read_lines_from_file(path)
