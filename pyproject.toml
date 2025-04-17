@@ -1,6 +1,6 @@
 [project]
 name = "mm-crypto-utils"
-version = "0.3.1"
+version = "0.3.2"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
@@ -20,7 +20,8 @@ dev-dependencies = [
     "pip-audit~=2.9.0",
     "bandit~=1.8.3",
     "mypy~=1.15.0",
-    "eth-account>=0.13.6",
+    "eth-account~=0.13.6",
+    "pytest-asyncio~=0.26.0",
 ]
 
 [tool.mypy]
@@ -69,3 +70,6 @@ indent-style = "space"
 [tool.bandit]
 exclude_dirs = ["tests"]
 skips = ["B311"]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
