@@ -28,7 +28,7 @@ async def retry_with_node_and_proxy(retries: int, nodes: Nodes, proxies: Proxies
     Returns:
         Result with success on first successful call, or last failure with logs of attempts.
     """
-    res: Result[T] = Result.failure("not_started")
+    res: Result[T] = Result.err("not_started")
     logs = []
 
     for _ in range(retries):
@@ -37,9 +37,9 @@ async def retry_with_node_and_proxy(retries: int, nodes: Nodes, proxies: Proxies
         res = await func(node, proxy)
         logs.append({"node": node, "proxy": proxy, "result": res.to_dict()})
         if res.is_ok():
-            return Result.success(res.unwrap(), extra={"retry_logs": logs})
+            return Result.ok(res.unwrap(), {"retry_logs": logs})
 
-    return Result.failure(res.unwrap_error(), extra={"retry_logs": logs})
+    return Result.err(res.unwrap_error(), {"retry_logs": logs})
 
 
 async def retry_with_proxy(retries: int, proxies: Proxies, func: FuncWithProxy[T]) -> Result[T]:
@@ -55,7 +55,7 @@ async def retry_with_proxy(retries: int, proxies: Proxies, func: FuncWithProxy[T
     Returns:
         Result with success on first successful call, or last failure with logs of attempts.
     """
-    res: Result[T] = Result.failure("not_started")
+    res: Result[T] = Result.err("not_started")
     logs = []
 
     for _ in range(retries):
@@ -63,6 +63,6 @@ async def retry_with_proxy(retries: int, proxies: Proxies, func: FuncWithProxy[T
         res = await func(proxy)
         logs.append({"proxy": proxy, "result": res.to_dict()})
         if res.is_ok():
-            return Result.success(res.unwrap(), extra={"retry_logs": logs})
+            return Result.ok(res.unwrap(), {"retry_logs": logs})
 
-    return Result.failure(res.unwrap_error(), extra={"retry_logs": logs})
+    return Result.err(res.unwrap_error(), {"retry_logs": logs})

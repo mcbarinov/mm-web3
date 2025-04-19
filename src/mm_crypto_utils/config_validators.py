@@ -70,7 +70,7 @@ class ConfigValidators:
                 if line.startswith("url:"):
                     url = line.removeprefix("url:").strip()
                     res = fetch_proxies_sync(url)
-                    if res.is_error():
+                    if res.is_err():
                         raise ValueError(f"Can't get proxies: {res.unwrap_error()}")
                     result += res.unwrap()
                 elif line.startswith("env_url:"):
@@ -79,7 +79,7 @@ class ConfigValidators:
                     if not url:
                         raise ValueError(f"missing env var: {env_var}")
                     res = fetch_proxies_sync(url)
-                    if res.is_error():
+                    if res.is_err():
                         raise ValueError(f"Can't get proxies: {res.unwrap_error()}")
                     result += res.unwrap()
                 elif line.startswith("file:"):

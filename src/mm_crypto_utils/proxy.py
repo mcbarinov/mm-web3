@@ -14,7 +14,7 @@ def random_proxy(proxies: Proxies) -> str | None:
 async def fetch_proxies_or_fatal(proxies_url: str, timeout: float = 5) -> list[str]:
     """Fetch proxies from the given url. If it can't fetch, exit with error."""
     res = await fetch_proxies(proxies_url, timeout=timeout)
-    if res.is_error():
+    if res.is_err():
         fatal(f"Can't get proxies: {res.error}")
     return res.unwrap()
 
@@ -22,39 +22,39 @@ async def fetch_proxies_or_fatal(proxies_url: str, timeout: float = 5) -> list[s
 async def fetch_proxies(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
     """Fetch proxies from the given url. Response is a list of proxies, one per line. Each proxy must be valid."""
     res = await http_request(proxies_url, timeout=timeout)
-    if res.is_error():
-        return res.to_result_failure()
+    if res.is_err():
+        return res.to_err_result()
 
     proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
     proxies = pydash.uniq(proxies)
     for proxy in proxies:
         if not is_valid_proxy_url(proxy):
-            return res.to_result_failure(f"Invalid proxy URL: {proxy}")
+            return res.to_err_result(f"Invalid proxy URL: {proxy}")
 
     if not proxies:
-        return res.to_result_failure("No valid proxies found")
-    return res.to_result_success(proxies)
+        return res.to_err_result("No valid proxies found")
+    return res.to_ok_result(proxies)
 
 
 def fetch_proxies_sync(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
     res = http_request_sync(proxies_url, timeout=timeout)
-    if res.is_error():
-        return res.to_result_failure()
+    if res.is_err():
+        return res.to_err_result()
 
     proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
     proxies = pydash.uniq(proxies)
     for proxy in proxies:
         if not is_valid_proxy_url(proxy):
-            return res.to_result_failure(f"Invalid proxy URL: {proxy}")
+            return res.to_err_result(f"Invalid proxy URL: {proxy}")
 
     if not proxies:
-        return res.to_result_failure("No valid proxies found")
-    return res.to_result_success(proxies)
+        return res.to_err_result("No valid proxies found")
+    return res.to_ok_result(proxies)
 
 
 def fetch_proxies_or_fatal_sync(proxies_url: str, timeout: float = 5) -> list[str]:
     res = fetch_proxies_sync(proxies_url, timeout=timeout)
-    if res.is_error():
+    if res.is_err():
         fatal(f"Can't get proxies: {res.error}")
     return res.unwrap()
 

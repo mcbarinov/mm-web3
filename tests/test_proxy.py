@@ -1,9 +1,5 @@
-import pytest
-
 from mm_crypto_utils import proxy
 from mm_crypto_utils.proxy import is_valid_proxy_url
-
-pytestmark = pytest.mark.asyncio
 
 
 def test_valid_proxy_urls():
