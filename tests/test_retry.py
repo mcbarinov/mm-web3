@@ -1,6 +1,6 @@
 from mm_std import Result
 
-from mm_crypto_utils import retry_with_node_and_proxy, retry_with_proxy
+from mm_crypto import retry_with_node_and_proxy, retry_with_proxy
 
 
 async def test_retry_with_node_and_proxy_success_on_first_try():

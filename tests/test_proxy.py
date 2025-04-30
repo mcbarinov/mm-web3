@@ -1,5 +1,5 @@
-from mm_crypto_utils import proxy
-from mm_crypto_utils.proxy import is_valid_proxy_url
+from mm_crypto import proxy
+from mm_crypto.proxy import is_valid_proxy_url
 
 
 def test_valid_proxy_urls():

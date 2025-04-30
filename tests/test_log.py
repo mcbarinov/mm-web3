@@ -1,4 +1,4 @@
-from mm_crypto_utils import get_log_prefix
+from mm_crypto import get_log_prefix
 
 
 def test_get_log_prefix():

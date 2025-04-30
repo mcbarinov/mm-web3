@@ -1,6 +1,6 @@
 import pytest
 
-from mm_crypto_utils import ConfigValidators
+from mm_crypto import ConfigValidators
 
 
 def test_proxies():

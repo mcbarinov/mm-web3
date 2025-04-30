@@ -2,7 +2,7 @@ from decimal import Decimal
 
 import pytest
 
-from mm_crypto_utils.calcs import VarInt, calc_decimal_value, calc_int_expression, calc_int_with_suffix_decimals
+from mm_crypto.calcs import VarInt, calc_decimal_value, calc_int_expression, calc_int_with_suffix_decimals
 
 
 def test_calc_decimal_expression():
