@@ -1,6 +1,6 @@
 [project]
-name = "mm-crypto"
-version = "0.4.0"
+name = "mm-crypto-utils"
+version = "0.3.7"
 description = ""
 requires-python = ">=3.12"
 dependencies = [

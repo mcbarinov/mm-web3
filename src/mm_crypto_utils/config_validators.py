@@ -6,11 +6,11 @@ import pydash
 from mm_std import str_to_list
 from pydantic import BaseModel
 
-from mm_crypto import calc_decimal_value, calc_int_expression
-from mm_crypto.account import AddressToPrivate
-from mm_crypto.calcs import VarInt
-from mm_crypto.proxy import fetch_proxies_sync
-from mm_crypto.utils import read_lines_from_file
+from mm_crypto_utils import calc_decimal_value, calc_int_expression
+from mm_crypto_utils.account import AddressToPrivate
+from mm_crypto_utils.calcs import VarInt
+from mm_crypto_utils.proxy import fetch_proxies_sync
+from mm_crypto_utils.utils import read_lines_from_file
 
 type IsAddress = Callable[[str], bool]
 

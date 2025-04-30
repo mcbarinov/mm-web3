@@ -1,4 +1,4 @@
-from mm_crypto import Network
+from mm_crypto_utils import Network
 
 NETWORKS_COUNT = 19
 

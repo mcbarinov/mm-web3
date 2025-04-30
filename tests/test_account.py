@@ -1,7 +1,7 @@
 import pytest
 from eth_account import Account
 
-from mm_crypto.account import AddressToPrivate
+from mm_crypto_utils.account import AddressToPrivate
 
 
 def eth_get_account(private_key: str) -> str:
