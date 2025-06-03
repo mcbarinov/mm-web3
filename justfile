@@ -14,19 +14,27 @@ format:
 test:
     uv run pytest -n auto tests
 
-lint: format
+lint: format pre-commit
     uv run ruff check src tests
     uv run mypy src
 
 audit:
-    uv run pip-audit
-    uv run bandit -r -c "pyproject.toml" src
+    uv export --no-dev --all-extras --format requirements-txt --no-emit-project > requirements.txt
+    uv run pip-audit -r requirements.txt --disable-pip
+    rm requirements.txt
+    uv run bandit -q -r -c "pyproject.toml" src
 
 publish: build lint audit test
     git diff-index --quiet HEAD
-    uvx twine upload dist/**
+    printf "Enter PyPI token: " && IFS= read -rs TOKEN && echo && uv publish --token "$TOKEN"
     git tag -a 'v{{version}}' -m 'v{{version}}'
     git push origin v{{version}}
 
 sync:
-    uv sync
+    uv sync --all-extras
+
+pre-commit:
+    uv run pre-commit run --all-files
+
+pre-commit-autoupdate:
+    uv run pre-commit autoupdate

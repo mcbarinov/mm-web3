@@ -1,74 +1,124 @@
-from mm_std import Result
+"""Tests for retry utilities."""
 
-from mm_crypto_utils import retry_with_node_and_proxy, retry_with_proxy
+from mm_result import Result
 
-
-async def test_retry_with_node_and_proxy_success_on_first_try():
-    async def fake_func(node: str, proxy: str | None) -> Result[str]:
-        return Result.ok(f"{node}_{proxy}")
-
-    result = await retry_with_node_and_proxy(
-        retries=3, nodes=["node1", "node2"], proxies=["proxy1", "proxy2"], func=lambda node, proxy: fake_func(node, proxy)
-    )
-
-    assert result.is_ok()
-    assert "retry_logs" in result.extra
-    assert len(result.extra["retry_logs"]) == 1
+from mm_cryptocurrency.retry import retry_with_node_and_proxy, retry_with_proxy
 
 
-async def test_retry_with_node_and_proxy_success_on_retry():
-    attempts = []
+class TestRetryWithNodeAndProxy:
+    async def test_success_on_first_try(self) -> None:
+        async def func(_node: str, _proxy: str | None) -> Result[str]:
+            return Result.ok("success")
 
-    async def flaky_func(node: str, proxy: str | None) -> Result[str]:
-        attempts.append((node, proxy))
-        if len(attempts) < 2:
-            return Result.err("temporary_error")
-        return Result.ok("finally")
+        result = await retry_with_node_and_proxy(3, "node1", "proxy1", func)
+        assert result.is_ok()
+        assert result.value == "success"
+        assert result.extra is not None
+        assert "retry_logs" in result.extra
+        assert len(result.extra["retry_logs"]) == 1
 
-    result = await retry_with_node_and_proxy(
-        retries=3, nodes=["n1"], proxies=["p1"], func=lambda node, proxy: flaky_func(node, proxy)
-    )
+    async def test_success_on_second_try(self) -> None:
+        attempts = 0
 
-    assert result.is_ok()
-    assert result.unwrap() == "finally"
-    assert len(result.extra["retry_logs"]) == 2
+        async def func(_node: str, _proxy: str | None) -> Result[str]:
+            nonlocal attempts
+            attempts += 1
+            if attempts == 1:
+                return Result.err("first_failure")
+            return Result.ok("success")
+
+        result = await retry_with_node_and_proxy(3, "node1", "proxy1", func)
+        assert result.is_ok()
+        assert result.value == "success"
+        assert result.extra is not None
+        assert "retry_logs" in result.extra
+        assert len(result.extra["retry_logs"]) == 2
+
+    async def test_all_attempts_fail(self) -> None:
+        async def func(_node: str, _proxy: str | None) -> Result[str]:
+            return Result.err("failure")
+
+        result = await retry_with_node_and_proxy(3, "node1", "proxy1", func)
+        assert result.is_err()
+        assert result.error == "failure"
+        assert result.extra is not None
+        assert "retry_logs" in result.extra
+        assert len(result.extra["retry_logs"]) == 3
+
+    async def test_multiple_nodes_and_proxies(self) -> None:
+        nodes = ["node1", "node2"]
+        proxies = ["proxy1", "proxy2"]
+        attempts = 0
+
+        async def func(_node: str, _proxy: str | None) -> Result[str]:
+            nonlocal attempts
+            attempts += 1
+            if attempts == 2:
+                return Result.ok("success")
+            return Result.err("failure")
+
+        result = await retry_with_node_and_proxy(3, nodes, proxies, func)
+        assert result.is_ok()
+        assert result.value == "success"
+        assert result.extra is not None
+        assert "retry_logs" in result.extra
+        assert len(result.extra["retry_logs"]) == 2
 
 
-async def test_retry_with_node_and_proxy_all_failures():
-    async def always_fail(_node: str, _proxy: str | None) -> Result[str]:
-        return Result.err("fail")
+class TestRetryWithProxy:
+    async def test_success_on_first_try(self) -> None:
+        async def func(_proxy: str | None) -> Result[str]:
+            return Result.ok("success")
 
-    result = await retry_with_node_and_proxy(
-        retries=3, nodes=["n1"], proxies=["p1"], func=lambda node, proxy: always_fail(node, proxy)
-    )
+        result = await retry_with_proxy(3, "proxy1", func)
+        assert result.is_ok()
+        assert result.value == "success"
+        assert result.extra is not None
+        assert "retry_logs" in result.extra
+        assert len(result.extra["retry_logs"]) == 1
 
-    assert result.is_err()
-    assert result.unwrap_error() == "fail"
-    assert len(result.extra["retry_logs"]) == 3
+    async def test_success_on_second_try(self) -> None:
+        attempts = 0
 
+        async def func(_proxy: str | None) -> Result[str]:
+            nonlocal attempts
+            attempts += 1
+            if attempts == 1:
+                return Result.err("first_failure")
+            return Result.ok("success")
 
-async def test_retry_with_proxy_success():
-    async def success_on_second_try(_proxy: str | None) -> Result[str]:
-        success_on_second_try.counter += 1
-        if success_on_second_try.counter < 2:
-            return Result.err("fail")
-        return Result.ok("ok")
+        result = await retry_with_proxy(3, "proxy1", func)
+        assert result.is_ok()
+        assert result.value == "success"
+        assert result.extra is not None
+        assert "retry_logs" in result.extra
+        assert len(result.extra["retry_logs"]) == 2
 
-    success_on_second_try.counter = 0
+    async def test_all_attempts_fail(self) -> None:
+        async def func(_proxy: str | None) -> Result[str]:
+            return Result.err("failure")
 
-    result = await retry_with_proxy(retries=3, proxies=["proxy1", "proxy2"], func=lambda proxy: success_on_second_try(proxy))
+        result = await retry_with_proxy(3, "proxy1", func)
+        assert result.is_err()
+        assert result.error == "failure"
+        assert result.extra is not None
+        assert "retry_logs" in result.extra
+        assert len(result.extra["retry_logs"]) == 3
 
-    assert result.is_ok()
-    assert result.unwrap() == "ok"
-    assert len(result.extra["retry_logs"]) == 2
+    async def test_multiple_proxies(self) -> None:
+        proxies = ["proxy1", "proxy2"]
+        attempts = 0
 
+        async def func(_proxy: str | None) -> Result[str]:
+            nonlocal attempts
+            attempts += 1
+            if attempts == 2:
+                return Result.ok("success")
+            return Result.err("failure")
 
-async def test_retry_with_proxy_failure():
-    async def always_fail(_proxy: str | None) -> Result[str]:
-        return Result.err("proxy_error")
-
-    result = await retry_with_proxy(retries=2, proxies=["p1", "p2"], func=lambda proxy: always_fail(proxy))
-
-    assert result.is_err()
-    assert result.unwrap_error() == "proxy_error"
-    assert len(result.extra["retry_logs"]) == 2
+        result = await retry_with_proxy(3, proxies, func)
+        assert result.is_ok()
+        assert result.value == "success"
+        assert result.extra is not None
+        assert "retry_logs" in result.extra
+        assert len(result.extra["retry_logs"]) == 2

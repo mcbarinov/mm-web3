@@ -1,16 +1,21 @@
+"""Network types and utilities for different blockchain networks."""
+
 from __future__ import annotations
 
-from enum import Enum, unique
+from enum import StrEnum, unique
 
 
 @unique
-class NetworkType(str, Enum):
+class NetworkType(StrEnum):
+    """Base network types (EVM, Solana, etc)."""
+
     EVM = "evm"
     SOLANA = "solana"
     APTOS = "aptos"
     STARKNET = "starknet"
 
     def lowercase_address(self) -> bool:
+        """Whether addresses for this network type should be lowercase."""
         match self:
             case NetworkType.EVM:
                 return True
@@ -24,7 +29,9 @@ class NetworkType(str, Enum):
 
 
 @unique
-class Network(str, Enum):
+class Network(StrEnum):
+    """Blockchain networks"""
+
     APTOS = "aptos"
     ARBITRUM_ONE = "arbitrum-one"
     AVAX_C = "avax-c"
@@ -47,6 +54,7 @@ class Network(str, Enum):
 
     @property
     def network_type(self) -> NetworkType:
+        """Get the base network type (EVM, Solana, etc)."""
         if self in self.evm_networks():
             return NetworkType.EVM
         if self in self.solana_networks():
@@ -58,6 +66,7 @@ class Network(str, Enum):
         raise ValueError("no network found")
 
     def explorer_token(self, token: str) -> str:
+        """Get explorer URL for a token address."""
         match self:
             case Network.ARBITRUM_ONE:
                 return f"https://arbiscan.io/token/{token}"
@@ -101,6 +110,7 @@ class Network(str, Enum):
         raise ValueError("no network found")
 
     def explorer_account(self, account: str) -> str:
+        """Get explorer URL for an account address."""
         match self:
             case Network.ARBITRUM_ONE:
                 return f"https://arbiscan.io/address/{account}"
@@ -145,6 +155,7 @@ class Network(str, Enum):
 
     @classmethod
     def evm_networks(cls) -> list[Network]:
+        """Get list of all EVM-compatible networks."""
         return [
             Network.ARBITRUM_ONE,
             Network.AVAX_C,
@@ -166,12 +177,15 @@ class Network(str, Enum):
 
     @classmethod
     def solana_networks(cls) -> list[Network]:
+        """Get list of all Solana networks."""
         return [Network.SOLANA]
 
     @classmethod
     def aptos_networks(cls) -> list[Network]:
+        """Get list of all Aptos networks."""
         return [Network.APTOS]
 
     @classmethod
     def starknet_networks(cls) -> list[Network]:
+        """Get list of all Starknet networks."""
         return [Network.STARKNET]

@@ -1,32 +1,30 @@
+"""Proxy utilities for HTTP requests."""
+
 from collections.abc import Sequence
 from urllib.parse import urlparse
 
-import pydash
-from mm_std import Result, fatal, http_request, http_request_sync, random_str_choice
+from mm_http import http_request, http_request_sync
+from mm_result import Result
+
+from mm_cryptocurrency.utils import random_str_choice
 
 type Proxies = str | Sequence[str] | None
+"""Proxy configuration: single URL, sequence of URLs, or None for no proxy."""
 
 
 def random_proxy(proxies: Proxies) -> str | None:
+    """Select a random proxy from the given configuration."""
     return random_str_choice(proxies)
 
 
-async def fetch_proxies_or_fatal(proxies_url: str, timeout: float = 5) -> list[str]:
-    """Fetch proxies from the given url. If it can't fetch, exit with error."""
-    res = await fetch_proxies(proxies_url, timeout=timeout)
-    if res.is_err():
-        fatal(f"Can't get proxies: {res.error}")
-    return res.unwrap()
-
-
 async def fetch_proxies(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
-    """Fetch proxies from the given url. Response is a list of proxies, one per line. Each proxy must be valid."""
+    """Fetch proxies from the given url. Expects content-type: text/plain with one proxy per line. Each proxy must be valid."""
     res = await http_request(proxies_url, timeout=timeout)
     if res.is_err():
         return res.to_err()
 
     proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
-    proxies = pydash.uniq(proxies)
+    proxies = list(dict.fromkeys(proxies))
     for proxy in proxies:
         if not is_valid_proxy_url(proxy):
             return res.to_err(f"Invalid proxy URL: {proxy}")
@@ -37,12 +35,13 @@ async def fetch_proxies(proxies_url: str, timeout: float = 5) -> Result[list[str
 
 
 def fetch_proxies_sync(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
+    """Synchronous version of fetch_proxies."""
     res = http_request_sync(proxies_url, timeout=timeout)
     if res.is_err():
         return res.to_err()
 
     proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
-    proxies = pydash.uniq(proxies)
+    proxies = list(dict.fromkeys(proxies))
     for proxy in proxies:
         if not is_valid_proxy_url(proxy):
             return res.to_err(f"Invalid proxy URL: {proxy}")
@@ -50,13 +49,6 @@ def fetch_proxies_sync(proxies_url: str, timeout: float = 5) -> Result[list[str]
     if not proxies:
         return res.to_err("No valid proxies found")
     return res.to_ok(proxies)
-
-
-def fetch_proxies_or_fatal_sync(proxies_url: str, timeout: float = 5) -> list[str]:
-    res = fetch_proxies_sync(proxies_url, timeout=timeout)
-    if res.is_err():
-        fatal(f"Can't get proxies: {res.error}")
-    return res.unwrap()
 
 
 def is_valid_proxy_url(proxy_url: str) -> bool:

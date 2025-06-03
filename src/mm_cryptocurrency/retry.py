@@ -1,10 +1,10 @@
 from collections.abc import Awaitable, Callable
 from typing import TypeVar
 
-from mm_std import Result
+from mm_result import Result
 
-from mm_crypto_utils.node import Nodes, random_node
-from mm_crypto_utils.proxy import Proxies, random_proxy
+from mm_cryptocurrency.node import Nodes, random_node
+from mm_cryptocurrency.proxy import Proxies, random_proxy
 
 T = TypeVar("T")
 
@@ -39,7 +39,7 @@ async def retry_with_node_and_proxy(retries: int, nodes: Nodes, proxies: Proxies
         if res.is_ok():
             return Result.ok(res.unwrap(), {"retry_logs": logs})
 
-    return Result.err(res.unwrap_error(), {"retry_logs": logs})
+    return Result.err(res.expect_error(), {"retry_logs": logs})
 
 
 async def retry_with_proxy(retries: int, proxies: Proxies, func: FuncWithProxy[T]) -> Result[T]:
@@ -65,4 +65,4 @@ async def retry_with_proxy(retries: int, proxies: Proxies, func: FuncWithProxy[T
         if res.is_ok():
             return Result.ok(res.unwrap(), {"retry_logs": logs})
 
-    return Result.err(res.unwrap_error(), {"retry_logs": logs})
+    return Result.err(res.expect_error(), {"retry_logs": logs})

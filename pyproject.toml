@@ -1,11 +1,12 @@
 [project]
-name = "mm-crypto-utils"
-version = "0.3.7"
+name = "mm-cryptocurrency"
+version = "0.4.0"
 description = ""
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
-    "mm-std>=0.4.12",
-    "loguru>=0.7.3",
+    "mm-http>=0.0.1",
+    "mm-print>=0.0.2",
+    "mm-result>=0.0.2",
 ]
 
 [build-system]
@@ -15,20 +16,23 @@ build-backend = "hatchling.build"
 [tool.uv]
 dev-dependencies = [
     "pytest~=8.3.5",
-    "pytest-xdist~=3.6.1",
-    "ruff~=0.11.8",
+    "pytest-asyncio~=1.0.0",
+    "pytest-xdist~=3.7.0",
+    "pytest-httpserver~=1.1.3",
+    "ruff~=0.11.11",
+    "mypy~=1.16.0",
     "pip-audit~=2.9.0",
     "bandit~=1.8.3",
-    "mypy~=1.15.0",
-    "eth-account~=0.13.7",
-    "pytest-asyncio~=0.26.0",
+    "pre-commit~=4.2.0",
+    "types-requests~=2.32.0.20250602",
+    "python-dotenv~=1.1.0",
 ]
 
 [tool.mypy]
 python_version = "3.13"
 warn_no_return = false
 strict = true
-exclude = '^(tests|tmp)/'
+exclude = ["^tests/", "^tmp/"]
 
 [tool.ruff]
 line-length = 130
@@ -36,28 +40,29 @@ target-version = "py313"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "TC", # flake8-type-checking, TYPE_CHECKING is dangerous, for example it doesn't work with pydantic
-    "A005", # flake8-builtins: stdlib-module-shadowing
-    "ERA001", # eradicate: commented-out-code
-    "PT", # flake8-pytest-style
-    "D", # pydocstyle
-    "FIX", # flake8-fixme
-    "PLR0911", # pylint: too-many-return-statements
-    "PLR0912", # pylint: too-many-branches
-    "PLR0913", # pylint: too-many-arguments
-    "PLR2004", # pylint: magic-value-comparison
-    "PLC0414", # pylint: useless-import-alias
-    "FBT", # flake8-boolean-trap
-    "EM", # flake8-errmsg
-    "TRY003", # tryceratops: raise-vanilla-args
-    "C901", # mccabe: complex-structure,
-    "BLE001", # flake8-blind-except
-    "S311", # bandit: suspicious-non-cryptographic-random-usage
-    "TD002", # flake8-todos: missing-todo-author
-    "TD003", # flake8-todos: missing-todo-link
-    "RET503", # flake8-return: implicit-return
-    "COM812", # it's used in ruff formatter
+    "TC",       # flake8-type-checking, TYPE_CHECKING is dangerous, for example it doesn't work with pydantic
+    "A005",     # flake8-builtins: stdlib-module-shadowing
+    "ERA001",   # eradicate: commented-out-code
+    "PT",       # flake8-pytest-style
+    "D",        # pydocstyle
+    "FIX",      # flake8-fixme
+    "PLR0911",  # pylint: too-many-return-statements
+    "PLR0912",  # pylint: too-many-branches
+    "PLR0913",  # pylint: too-many-arguments
+    "PLR2004",  # pylint: magic-value-comparison
+    "PLC0414",  # pylint: useless-import-alias
+    "FBT",      # flake8-boolean-trap
+    "EM",       # flake8-errmsg
+    "TRY003",   # tryceratops: raise-vanilla-args
+    "C901",     # mccabe: complex-structure,
+    "BLE001",   # flake8-blind-except
+    "S311",     # bandit: suspicious-non-cryptographic-random-usage
+    "TD002",    # flake8-todos: missing-todo-author
+    "TD003",    # flake8-todos: missing-todo-link
+    "RET503",   # flake8-return: implicit-return
+    "COM812",   # it's used in ruff formatter
     "ASYNC109",
+    "G004",
 ]
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["field_validator"]
@@ -72,5 +77,6 @@ exclude_dirs = ["tests"]
 skips = ["B311"]
 
 [tool.pytest.ini_options]
+markers = ["proxy: requires access proxies"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
