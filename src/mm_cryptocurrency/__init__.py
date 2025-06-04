@@ -1,3 +1,4 @@
+from mm_cryptocurrency.config import BaseConfig as BaseConfig
 from mm_cryptocurrency.network import Network as Network
 from mm_cryptocurrency.network import NetworkType as NetworkType
 from mm_cryptocurrency.node import random_node as random_node
