@@ -1,12 +1,11 @@
 """Proxy utilities for HTTP requests."""
 
+import random
 from collections.abc import Sequence
 from urllib.parse import urlparse
 
 from mm_http import http_request, http_request_sync
 from mm_result import Result
-
-from mm_cryptocurrency.utils import random_str_choice
 
 type Proxies = str | Sequence[str] | None
 """Proxy configuration: single URL, sequence of URLs, or None for no proxy."""
@@ -14,41 +13,51 @@ type Proxies = str | Sequence[str] | None
 
 def random_proxy(proxies: Proxies) -> str | None:
     """Select a random proxy from the given configuration."""
-    return random_str_choice(proxies)
+    if proxies is None:
+        return None
+
+    if isinstance(proxies, str):
+        return proxies
+
+    # proxies is a Sequence[str] at this point
+    if proxies:
+        return random.choice(proxies)
+
+    return None
 
 
 async def fetch_proxies(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
     """Fetch proxies from the given url. Expects content-type: text/plain with one proxy per line. Each proxy must be valid."""
     res = await http_request(proxies_url, timeout=timeout)
     if res.is_err():
-        return res.to_err()
+        return res.to_result_err()
 
     proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
     proxies = list(dict.fromkeys(proxies))
     for proxy in proxies:
         if not is_valid_proxy_url(proxy):
-            return res.to_err(f"Invalid proxy URL: {proxy}")
+            return res.to_result_err(f"Invalid proxy URL: {proxy}")
 
     if not proxies:
-        return res.to_err("No valid proxies found")
-    return res.to_ok(proxies)
+        return res.to_result_err("No valid proxies found")
+    return res.to_result_ok(proxies)
 
 
 def fetch_proxies_sync(proxies_url: str, timeout: float = 5) -> Result[list[str]]:
     """Synchronous version of fetch_proxies."""
     res = http_request_sync(proxies_url, timeout=timeout)
     if res.is_err():
-        return res.to_err()
+        return res.to_result_err()
 
     proxies = [p.strip() for p in (res.body or "").splitlines() if p.strip()]
     proxies = list(dict.fromkeys(proxies))
     for proxy in proxies:
         if not is_valid_proxy_url(proxy):
-            return res.to_err(f"Invalid proxy URL: {proxy}")
+            return res.to_result_err(f"Invalid proxy URL: {proxy}")
 
     if not proxies:
-        return res.to_err("No valid proxies found")
-    return res.to_ok(proxies)
+        return res.to_result_err("No valid proxies found")
+    return res.to_result_ok(proxies)
 
 
 def is_valid_proxy_url(proxy_url: str) -> bool:

@@ -39,7 +39,7 @@ async def retry_with_node_and_proxy(retries: int, nodes: Nodes, proxies: Proxies
         if res.is_ok():
             return Result.ok(res.unwrap(), {"retry_logs": logs})
 
-    return Result.err(res.expect_error(), {"retry_logs": logs})
+    return Result.err(res.unwrap_err(), {"retry_logs": logs})
 
 
 async def retry_with_proxy(retries: int, proxies: Proxies, func: FuncWithProxy[T]) -> Result[T]:
@@ -65,4 +65,4 @@ async def retry_with_proxy(retries: int, proxies: Proxies, func: FuncWithProxy[T
         if res.is_ok():
             return Result.ok(res.unwrap(), {"retry_logs": logs})
 
-    return Result.err(res.expect_error(), {"retry_logs": logs})
+    return Result.err(res.unwrap_err(), {"retry_logs": logs})

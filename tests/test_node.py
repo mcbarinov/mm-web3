@@ -28,8 +28,8 @@ class TestRandomNode:
         assert result in nodes
 
         # Empty inputs should raise ValueError
-        with pytest.raises(ValueError, match="No valid node available for selection"):
+        with pytest.raises(ValueError, match="No nodes provided"):
             random_node([])
 
-        with pytest.raises(ValueError, match="No valid node available for selection"):
+        with pytest.raises(ValueError, match="No nodes provided"):
             random_node(())

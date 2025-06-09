@@ -1,6 +1,5 @@
+import random
 from collections.abc import Sequence
-
-from .utils import random_str_choice
 
 type Nodes = str | Sequence[str]
 """
@@ -26,9 +25,12 @@ def random_node(nodes: Nodes, remove_slash: bool = True) -> str:
     Raises:
         ValueError: When no valid node can be selected
     """
-    selected = random_str_choice(nodes)
-    if selected is None:
-        raise ValueError("No valid node available for selection")
+    if isinstance(nodes, str):
+        selected = nodes
+    else:
+        if not nodes:
+            raise ValueError("No nodes provided")
+        selected = random.choice(nodes)
 
     if remove_slash and selected.endswith("/"):
         selected = selected.removesuffix("/")
