@@ -1,6 +1,7 @@
 from mm_cryptocurrency.config import BaseConfig as BaseConfig
 from mm_cryptocurrency.network import Network as Network
 from mm_cryptocurrency.network import NetworkType as NetworkType
+from mm_cryptocurrency.node import Nodes as Nodes
 from mm_cryptocurrency.node import random_node as random_node
 from mm_cryptocurrency.proxy import fetch_proxies as fetch_proxies
 from mm_cryptocurrency.proxy import fetch_proxies_sync as fetch_proxies_sync

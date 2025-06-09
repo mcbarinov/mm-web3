@@ -363,7 +363,7 @@ wheels = [
 
 [[package]]
 name = "mm-cryptocurrency"
-version = "0.4.2"
+version = "0.4.3"
 source = { editable = "." }
 dependencies = [
     { name = "mm-http" },
@@ -390,7 +390,7 @@ dev = [
 requires-dist = [
     { name = "mm-http", specifier = ">=0.0.2" },
     { name = "mm-print", specifier = ">=0.0.3" },
-    { name = "mm-result", specifier = ">=0.0.3" },
+    { name = "mm-result", specifier = ">=0.0.4" },
 ]
 
 [package.metadata.requires-dev]
@@ -438,10 +438,10 @@ wheels = [
 
 [[package]]
 name = "mm-result"
-version = "0.0.3"
+version = "0.0.4"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/22/a1/899565d160a3252e90d8558a9578b3f1d0e337a3b729da9b60e77846a6d4/mm_result-0.0.3-py3-none-any.whl", hash = "sha256:39949a2f585915df436d7e5c649e7318a8e123f600e692fcc0b14cc8f2f8aef7", size = 4735, upload-time = "2025-06-09T08:25:35.226Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/6b/b287f7d618080ddbe6bbc8091da47ee316c581a3baa22555e108affd7d71/mm_result-0.0.4-py3-none-any.whl", hash = "sha256:edb12be3bd49eca224335067b110fb5a1901d68d52c2a371cdda32d5274a06b7", size = 4907, upload-time = "2025-06-09T15:32:07.204Z" },
 ]
 
 [[package]]
