@@ -1,3 +1,4 @@
+from mm_cryptocurrency.account import PrivateKeyMap as PrivateKeyMap
 from mm_cryptocurrency.config import BaseConfig as BaseConfig
 from mm_cryptocurrency.network import Network as Network
 from mm_cryptocurrency.network import NetworkType as NetworkType

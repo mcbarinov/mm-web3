@@ -26,6 +26,7 @@ dev-dependencies = [
     "pre-commit~=4.2.0",
     "types-requests~=2.32.0.20250602",
     "python-dotenv~=1.1.0",
+    "eth-account>=0.13.7",
 ]
 
 [tool.mypy]
