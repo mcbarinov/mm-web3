@@ -15,3 +15,4 @@ from mm_cryptocurrency.proxy import random_proxy as random_proxy
 from mm_cryptocurrency.retry import retry_with_node_and_proxy as retry_with_node_and_proxy
 from mm_cryptocurrency.retry import retry_with_proxy as retry_with_proxy
 from mm_cryptocurrency.utils import read_items_from_file as read_items_from_file
+from mm_cryptocurrency.utils import read_lines_from_file as read_lines_from_file

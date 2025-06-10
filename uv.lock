@@ -579,7 +579,7 @@ requires-dist = [
     { name = "mm-http", specifier = ">=0.0.3" },
     { name = "mm-print", specifier = ">=0.0.3" },
     { name = "mm-result", specifier = ">=0.0.4" },
-    { name = "mm-std", specifier = "~=0.5.1" },
+    { name = "mm-std", specifier = "~=0.5.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -636,10 +636,10 @@ wheels = [
 
 [[package]]
 name = "mm-std"
-version = "0.5.1"
+version = "0.5.2"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7c/0f/431c7d566ba6cc7e53ba979e65768dc43b63d22b3371aad9c4e133c6bcb6/mm_std-0.5.1-py3-none-any.whl", hash = "sha256:c516b65654532bf058e04c767d8d889618596c8a3fed9fb75f89f75b34cb4d1c", size = 6121, upload-time = "2025-06-09T10:07:22.492Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/24/943ad33ac75a0a478bbb3e95b4691f34f4359b2a3a5ee4585abd621cd797/mm_std-0.5.2-py3-none-any.whl", hash = "sha256:fa524bb1ffd9db6815f20979fbff440ef6725b65560dc1fc7f59cbc7a073fa35", size = 6465, upload-time = "2025-06-09T14:17:48.952Z" },
 ]
 
 [[package]]

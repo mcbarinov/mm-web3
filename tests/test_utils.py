@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from mm_cryptocurrency import read_items_from_file
+from mm_cryptocurrency import read_items_from_file, read_lines_from_file
 
 
 class TestReadItemsFromFile:
@@ -168,3 +168,133 @@ class TestReadItemsFromFile:
         error_msg = str(exc_info.value)
         assert "line 2" in error_msg
         assert "invalid123" in error_msg  # Should show lowercase version
+
+
+class TestReadLinesFromFile:
+    """Tests for the read_lines_from_file function."""
+
+    def test_successful_reading(self, tmp_path: Path) -> None:
+        """Test reading basic file content."""
+        test_file = tmp_path / "test.txt"
+        test_file.write_text("line1\nline2\nline3")
+
+        result = read_lines_from_file(test_file)
+        assert result == ["line1", "line2", "line3"]
+
+    def test_path_string_input(self, tmp_path: Path) -> None:
+        """Test that function accepts string paths."""
+        test_file = tmp_path / "test.txt"
+        test_file.write_text("line1\nline2")
+
+        result = read_lines_from_file(str(test_file))
+        assert result == ["line1", "line2"]
+
+    def test_lowercase_option(self, tmp_path: Path) -> None:
+        """Test the lowercase parameter functionality."""
+        test_file = tmp_path / "test.txt"
+        test_file.write_text("UPPER\nMixed\nlower")
+
+        # Without lowercase
+        result = read_lines_from_file(test_file)
+        assert result == ["UPPER", "Mixed", "lower"]
+
+        # With lowercase
+        result = read_lines_from_file(test_file, lowercase=True)
+        assert result == ["upper", "mixed", "lower"]
+
+    def test_empty_lines_skipped(self, tmp_path: Path) -> None:
+        """Test that empty lines are properly skipped."""
+        test_file = tmp_path / "test.txt"
+        test_file.write_text("line1\n\n\nline2\n\nline3\n")
+
+        result = read_lines_from_file(test_file)
+        assert result == ["line1", "line2", "line3"]
+
+    def test_whitespace_stripped(self, tmp_path: Path) -> None:
+        """Test that leading/trailing whitespace is stripped."""
+        test_file = tmp_path / "test.txt"
+        test_file.write_text("  line1  \n\tline2\t\n line3 ")
+
+        result = read_lines_from_file(test_file)
+        assert result == ["line1", "line2", "line3"]
+
+    def test_whitespace_only_lines_skipped(self, tmp_path: Path) -> None:
+        """Test that lines with only whitespace are skipped."""
+        test_file = tmp_path / "test.txt"
+        test_file.write_text("line1\n   \n\t\t\nline2\n  \t  \nline3")
+
+        result = read_lines_from_file(test_file)
+        assert result == ["line1", "line2", "line3"]
+
+    def test_empty_file(self, tmp_path: Path) -> None:
+        """Test reading empty file returns empty list."""
+        test_file = tmp_path / "empty.txt"
+        test_file.write_text("")
+
+        result = read_lines_from_file(test_file)
+        assert result == []
+
+    def test_file_with_only_whitespace(self, tmp_path: Path) -> None:
+        """Test file containing only whitespace returns empty list."""
+        test_file = tmp_path / "whitespace.txt"
+        test_file.write_text("  \n\t\n  \n")
+
+        result = read_lines_from_file(test_file)
+        assert result == []
+
+    def test_missing_file_error(self) -> None:
+        """Test error when file doesn't exist."""
+        non_existent = Path("/tmp/nonexistent_file.txt")
+
+        with pytest.raises(ValueError) as exc_info:
+            read_lines_from_file(non_existent)
+
+        error_msg = str(exc_info.value)
+        assert "is not a file" in error_msg
+        assert str(non_existent) in error_msg
+
+    def test_directory_instead_of_file(self, tmp_path: Path) -> None:
+        """Test error when path points to directory."""
+        with pytest.raises(ValueError) as exc_info:
+            read_lines_from_file(tmp_path)
+
+        error_msg = str(exc_info.value)
+        assert "is not a file" in error_msg
+
+    def test_file_read_permission_error(self, tmp_path: Path) -> None:
+        """Test handling of file read permission errors."""
+        test_file = tmp_path / "test.txt"
+        test_file.write_text("content")
+        test_file.chmod(0o000)  # Remove all permissions
+
+        try:
+            with pytest.raises(ValueError) as exc_info:
+                read_lines_from_file(test_file)
+
+            error_msg = str(exc_info.value)
+            assert "Cannot read file" in error_msg
+            assert str(test_file) in error_msg
+        finally:
+            # Restore permissions for cleanup
+            test_file.chmod(0o644)
+
+    def test_expanduser_functionality(self) -> None:
+        """Test that ~ in paths is expanded."""
+        home_path = Path("~/test_file.txt")
+        expanded_path = home_path.expanduser()
+
+        with pytest.raises(ValueError) as exc_info:
+            read_lines_from_file(home_path)
+
+        error_msg = str(exc_info.value)
+        # The error should contain the expanded path, not the ~ path
+        assert str(expanded_path) in error_msg
+        assert "~" not in error_msg
+
+    def test_mixed_content_and_lowercase(self, tmp_path: Path) -> None:
+        """Test complex scenario with mixed content and lowercase option."""
+        test_file = tmp_path / "test.txt"
+        test_file.write_text("ADDR123\n\n  ADDR456  \n\t\nADDR789\n")
+
+        result = read_lines_from_file(test_file, lowercase=True)
+        assert result == ["addr123", "addr456", "addr789"]
