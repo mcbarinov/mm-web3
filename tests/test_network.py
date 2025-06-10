@@ -1,4 +1,4 @@
-from mm_cryptocurrency.network import Network
+from mm_cryptocurrency import Network
 
 NETWORKS_COUNT = 19
 

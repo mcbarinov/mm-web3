@@ -4,7 +4,7 @@ import pytest
 from pytest_httpserver import HTTPServer
 from werkzeug import Request, Response
 
-from mm_cryptocurrency.proxy import fetch_proxies, fetch_proxies_sync, is_valid_proxy_url, random_proxy
+from mm_cryptocurrency import fetch_proxies, fetch_proxies_sync, is_valid_proxy_url, random_proxy
 
 
 class TestRandomProxy:

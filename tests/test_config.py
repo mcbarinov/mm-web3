@@ -6,7 +6,8 @@ from unittest.mock import patch
 import pytest
 from pydantic import field_validator
 
-from mm_cryptocurrency.config import BaseConfig, read_text_from_zip_archive
+from mm_cryptocurrency import BaseConfig
+from mm_cryptocurrency.config import read_text_from_zip_archive
 
 
 class SimpleTestConfig(BaseConfig):

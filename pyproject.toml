@@ -1,10 +1,10 @@
 [project]
 name = "mm-cryptocurrency"
-version = "0.4.3"
+version = "0.4.4"
 description = ""
 requires-python = ">=3.13"
 dependencies = [
-    "mm-http>=0.0.2",
+    "mm-http>=0.0.3",
     "mm-print>=0.0.3",
     "mm-result>=0.0.4",
 ]
