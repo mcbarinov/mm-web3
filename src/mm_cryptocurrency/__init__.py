@@ -16,3 +16,5 @@ from mm_cryptocurrency.retry import retry_with_node_and_proxy as retry_with_node
 from mm_cryptocurrency.retry import retry_with_proxy as retry_with_proxy
 from mm_cryptocurrency.utils import read_items_from_file as read_items_from_file
 from mm_cryptocurrency.utils import read_lines_from_file as read_lines_from_file
+from mm_cryptocurrency.validators import ConfigValidators as ConfigValidators
+from mm_cryptocurrency.validators import Transfer as Transfer
