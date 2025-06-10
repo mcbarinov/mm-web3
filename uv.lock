@@ -555,6 +555,7 @@ dependencies = [
     { name = "mm-http" },
     { name = "mm-print" },
     { name = "mm-result" },
+    { name = "mm-std" },
 ]
 
 [package.dev-dependencies]
@@ -578,6 +579,7 @@ requires-dist = [
     { name = "mm-http", specifier = ">=0.0.3" },
     { name = "mm-print", specifier = ">=0.0.3" },
     { name = "mm-result", specifier = ">=0.0.4" },
+    { name = "mm-std", specifier = "~=0.5.1" },
 ]
 
 [package.metadata.requires-dev]

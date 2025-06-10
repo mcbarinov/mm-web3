@@ -4,6 +4,7 @@ version = "0.4.4"
 description = ""
 requires-python = ">=3.13"
 dependencies = [
+    "mm-std~=0.5.1",
     "mm-http>=0.0.3",
     "mm-print>=0.0.3",
     "mm-result>=0.0.4",
