@@ -72,9 +72,9 @@ asyncio.run(main())
 ```python
 from pathlib import Path
 from pydantic import BaseModel
-from mm_cryptocurrency.config import BaseConfig
+from mm_cryptocurrency.config import CryptocurrencyConfig
 
-class MyConfig(BaseConfig):
+class MyConfig(CryptocurrencyConfig):
     api_key: str
     networks: list[str]
     retry_count: int = 3
@@ -216,7 +216,7 @@ Run tests with: `just test` or `uv run pytest`
 
 - **`Network`**: Enum of supported blockchain networks
 - **`NetworkType`**: Base network types (EVM, Solana, etc.)
-- **`BaseConfig`**: Base class for TOML configuration
+- **`CryptocurrencyConfig`**: Base class for TOML configuration
 
 ### Functions
 

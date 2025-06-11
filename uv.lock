@@ -549,13 +549,12 @@ wheels = [
 
 [[package]]
 name = "mm-cryptocurrency"
-version = "0.4.5"
+version = "0.4.6"
 source = { editable = "." }
 dependencies = [
     { name = "mm-http" },
     { name = "mm-print" },
     { name = "mm-result" },
-    { name = "mm-std" },
 ]
 
 [package.dev-dependencies]
@@ -571,15 +570,13 @@ dev = [
     { name = "pytest-xdist" },
     { name = "python-dotenv" },
     { name = "ruff" },
-    { name = "types-requests" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "mm-http", specifier = ">=0.0.3" },
-    { name = "mm-print", specifier = ">=0.0.3" },
+    { name = "mm-print", specifier = "~=0.1.1" },
     { name = "mm-result", specifier = ">=0.0.4" },
-    { name = "mm-std", specifier = "~=0.5.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -595,7 +592,6 @@ dev = [
     { name = "pytest-xdist", specifier = "~=3.7.0" },
     { name = "python-dotenv", specifier = "~=1.1.0" },
     { name = "ruff", specifier = "~=0.11.13" },
-    { name = "types-requests", specifier = "~=2.32.0.20250602" },
 ]
 
 [[package]]
@@ -616,14 +612,15 @@ wheels = [
 
 [[package]]
 name = "mm-print"
-version = "0.0.3"
+version = "0.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mm-std" },
     { name = "rich" },
+    { name = "tomlkit" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/15/83503548eb52c01176a558a739490008ec8af0a1e0543dcd321f7d67e7d7/mm_print-0.0.3-py3-none-any.whl", hash = "sha256:6417e0ce5a49df7353d9bacf5f6a3bd2027da78addf264f14f0233f2c97b12b7", size = 1982, upload-time = "2025-06-09T08:04:12.462Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/6c/5a44d4ca8a357f86767fe1940df67b125ea4c6d7cadbcecb5deebd5a91c6/mm_print-0.1.1-py3-none-any.whl", hash = "sha256:8fa3664fb5d7d55af6f1598317ff764e2c55e3d3a505725a85997e236dc8d11b", size = 2217, upload-time = "2025-06-11T07:34:12.772Z" },
 ]
 
 [[package]]
@@ -636,10 +633,11 @@ wheels = [
 
 [[package]]
 name = "mm-std"
-version = "0.5.2"
+version = "0.5.3"
 source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8a/1b/7991ecaf40417757fb8e383ed9cc600c0b3ac731f5c6f9132bd596448213/mm_std-0.5.3.tar.gz", hash = "sha256:e23d548706f32534450f2310d1259f5d84d54e7cc4f33920ad2dba86e8c2f7c6", size = 27823, upload-time = "2025-06-11T06:15:39.037Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7b/24/943ad33ac75a0a478bbb3e95b4691f34f4359b2a3a5ee4585abd621cd797/mm_std-0.5.2-py3-none-any.whl", hash = "sha256:fa524bb1ffd9db6815f20979fbff440ef6725b65560dc1fc7f59cbc7a073fa35", size = 6465, upload-time = "2025-06-09T14:17:48.952Z" },
+    { url = "https://files.pythonhosted.org/packages/56/22/57aa730c90899e5eff6de212c64d2bcf7d8526f3f2fb2d815718db332f36/mm_std-0.5.3-py3-none-any.whl", hash = "sha256:84f25e3a3dc4b10cab30c63be18ca195928a4cabda01b3cee9a27ba5520b2b92", size = 7532, upload-time = "2025-06-11T06:15:37.551Z" },
 ]
 
 [[package]]
@@ -1267,24 +1265,21 @@ wheels = [
 ]
 
 [[package]]
+name = "tomlkit"
+version = "0.13.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/18/0bbf3884e9eaa38819ebe46a7bd25dcd56b67434402b66a58c4b8e552575/tomlkit-0.13.3.tar.gz", hash = "sha256:430cf247ee57df2b94ee3fbe588e71d362a941ebb545dec29b53961d61add2a1", size = 185207, upload-time = "2025-06-05T07:13:44.947Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/75/8539d011f6be8e29f339c42e633aae3cb73bffa95dd0f9adec09b9c58e85/tomlkit-0.13.3-py3-none-any.whl", hash = "sha256:c89c649d79ee40629a9fda55f8ace8c6a1b42deb912b2a8fd8d942ddadb606b0", size = 38901, upload-time = "2025-06-05T07:13:43.546Z" },
+]
+
+[[package]]
 name = "toolz"
 version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/8a/0b/d80dfa675bf592f636d1ea0b835eab4ec8df6e9415d8cfd766df54456123/toolz-1.0.0.tar.gz", hash = "sha256:2c86e3d9a04798ac556793bced838816296a2f085017664e4995cb40a1047a02", size = 66790, upload-time = "2024-10-04T16:17:04.001Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/03/98/eb27cc78ad3af8e302c9d8ff4977f5026676e130d28dd7578132a457170c/toolz-1.0.0-py3-none-any.whl", hash = "sha256:292c8f1c4e7516bf9086f8850935c799a874039c8bcf959d47b600e4c44a6236", size = 56383, upload-time = "2024-10-04T16:17:01.533Z" },
-]
-
-[[package]]
-name = "types-requests"
-version = "2.32.0.20250602"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/48/b0/5321e6eeba5d59e4347fcf9bf06a5052f085c3aa0f4876230566d6a4dc97/types_requests-2.32.0.20250602.tar.gz", hash = "sha256:ee603aeefec42051195ae62ca7667cd909a2f8128fdf8aad9e8a5219ecfab3bf", size = 23042, upload-time = "2025-06-02T03:15:02.958Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/18/9b782980e575c6581d5c0c1c99f4c6f89a1d7173dad072ee96b2756c02e6/types_requests-2.32.0.20250602-py3-none-any.whl", hash = "sha256:f4f335f87779b47ce10b8b8597b409130299f6971ead27fead4fe7ba6ea3e726", size = 20638, upload-time = "2025-06-02T03:15:01.959Z" },
 ]
 
 [[package]]

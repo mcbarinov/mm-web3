@@ -5,7 +5,7 @@ clean:
     rm -rf .pytest_cache .mypy_cache .ruff_cache .coverage dist build src/*.egg-info
 
 build: clean
-    uv build --wheel
+    uv build
 
 format:
     uv run ruff check --select I --fix src tests

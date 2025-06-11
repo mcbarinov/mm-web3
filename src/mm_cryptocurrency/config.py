@@ -8,10 +8,10 @@ import mm_print
 from mm_result import Result
 from pydantic import BaseModel, ConfigDict, ValidationError
 
-T = TypeVar("T", bound="BaseConfig")
+T = TypeVar("T", bound="CryptocurrencyConfig")
 
 
-class BaseConfig(BaseModel):
+class CryptocurrencyConfig(BaseModel):
     """Base configuration class for cryptocurrency CLI tools.
 
     Provides TOML file loading with optional ZIP archive support,
@@ -31,7 +31,7 @@ class BaseConfig(BaseModel):
         if count:
             for k in count:
                 data[k] = len(data[k])
-        mm_print.print_json(data)
+        mm_print.json(data)
         sys.exit(0)
 
     @classmethod
@@ -133,13 +133,13 @@ class BaseConfig(BaseModel):
             res: Failed Result containing error information
         """
         if res.error == "validator_error" and res.extra:
-            mm_print.print_plain("config validation errors")
+            mm_print.plain("config validation errors")
             for e in res.extra["errors"]:
                 loc = e["loc"]
                 field = ".".join(str(lo) for lo in loc) if len(loc) > 0 else ""
-                mm_print.print_plain(f"{field} {e['msg']}")
+                mm_print.plain(f"{field} {e['msg']}")
         else:
-            mm_print.print_plain(f"can't parse config file: {res.error} {res.extra}")
+            mm_print.plain(f"can't parse config file: {res.error} {res.extra}")
         sys.exit(1)
 
 

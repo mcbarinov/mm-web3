@@ -1,12 +1,11 @@
 [project]
 name = "mm-cryptocurrency"
-version = "0.4.5"
+version = "0.4.6"
 description = ""
 requires-python = ">=3.13"
 dependencies = [
-    "mm-std~=0.5.2",
     "mm-http>=0.0.3",
-    "mm-print>=0.0.3",
+    "mm-print~=0.1.1",
     "mm-result>=0.0.4",
 ]
 
@@ -25,7 +24,6 @@ dev-dependencies = [
     "pip-audit~=2.9.0",
     "bandit~=1.8.3",
     "pre-commit~=4.2.0",
-    "types-requests~=2.32.0.20250602",
     "python-dotenv~=1.1.0",
     "eth-account>=0.13.7",
 ]

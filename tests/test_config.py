@@ -6,12 +6,12 @@ from unittest.mock import patch
 import pytest
 from pydantic import field_validator
 
-from mm_cryptocurrency import BaseConfig
+from mm_cryptocurrency import CryptocurrencyConfig
 from mm_cryptocurrency.config import read_text_from_zip_archive
 
 
-class SimpleTestConfig(BaseConfig):
-    """Test configuration class for testing BaseConfig functionality."""
+class SimpleTestConfig(CryptocurrencyConfig):
+    """Test configuration class for testing CryptocurrencyConfig functionality."""
 
     name: str
     count: int
@@ -24,7 +24,7 @@ class SimpleTestConfig(BaseConfig):
         return v
 
 
-class AsyncValidatorConfig(BaseConfig):
+class AsyncValidatorConfig(CryptocurrencyConfig):
     """Test configuration with async validation."""
 
     name: str
@@ -201,7 +201,7 @@ name = "test"
 count = -10
 """)
 
-        with patch("sys.exit") as mock_exit, patch("mm_print.print_plain") as mock_print:
+        with patch("sys.exit") as mock_exit, patch("mm_print.plain") as mock_print:
             SimpleTestConfig.read_toml_config_or_exit(validation_error_config)
             mock_exit.assert_called_with(1)
             mock_print.assert_called()
@@ -211,7 +211,7 @@ count = -10
 
         # Test file error exit
         missing_file = config_dir / "missing.toml"
-        with patch("sys.exit") as mock_exit, patch("mm_print.print_plain") as mock_print:
+        with patch("sys.exit") as mock_exit, patch("mm_print.plain") as mock_print:
             SimpleTestConfig.read_toml_config_or_exit(missing_file)
             mock_exit.assert_called_with(1)
             mock_print.assert_called()
@@ -221,7 +221,7 @@ def test_print_and_exit():
     """Test the print_and_exit method functionality."""
     config = SimpleTestConfig(name="test", count=42, enabled=True)
 
-    with patch("sys.exit") as mock_exit, patch("mm_print.print_json") as mock_print_json:
+    with patch("sys.exit") as mock_exit, patch("mm_print.json") as mock_print_json:
         config.print_and_exit()
         mock_exit.assert_called_with(0)
         mock_print_json.assert_called_once()
@@ -231,7 +231,7 @@ def test_print_and_exit():
         assert printed_data["enabled"] is True
 
     # Test with exclude and count parameters
-    with patch("sys.exit") as mock_exit, patch("mm_print.print_json") as mock_print_json:
+    with patch("sys.exit") as mock_exit, patch("mm_print.json") as mock_print_json:
         config.print_and_exit(exclude={"enabled"}, count={"name"})
         printed_data = mock_print_json.call_args[0][0]
         assert "enabled" not in printed_data
