@@ -3,6 +3,7 @@ from mm_cryptocurrency.calcs import calc_decimal_expression as calc_decimal_expr
 from mm_cryptocurrency.calcs import calc_expression_with_vars as calc_expression_with_vars
 from mm_cryptocurrency.calcs import convert_value_with_units as convert_value_with_units
 from mm_cryptocurrency.config import CryptocurrencyConfig as CryptocurrencyConfig
+from mm_cryptocurrency.log import init_loguru as init_loguru
 from mm_cryptocurrency.network import Network as Network
 from mm_cryptocurrency.network import NetworkType as NetworkType
 from mm_cryptocurrency.node import Nodes as Nodes
