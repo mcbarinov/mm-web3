@@ -2,7 +2,7 @@
 
 from mm_result import Result
 
-from mm_cryptocurrency import retry_with_node_and_proxy, retry_with_proxy
+from mm_web3 import retry_with_node_and_proxy, retry_with_proxy
 
 
 class TestRetryWithNodeAndProxy:

@@ -1,4 +1,4 @@
-from mm_cryptocurrency import Network
+from mm_web3 import Network
 
 NETWORKS_COUNT = 19
 

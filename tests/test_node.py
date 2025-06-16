@@ -1,6 +1,6 @@
 import pytest
 
-from mm_cryptocurrency import random_node
+from mm_web3 import random_node
 
 
 class TestRandomNode:
