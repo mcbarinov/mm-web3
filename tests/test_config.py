@@ -6,11 +6,11 @@ from unittest.mock import patch
 import pytest
 from pydantic import field_validator
 
-from mm_cryptocurrency import CryptocurrencyConfig
-from mm_cryptocurrency.config import read_text_from_zip_archive
+from mm_web3 import Web3CliConfig
+from mm_web3.config import read_text_from_zip_archive
 
 
-class SimpleTestConfig(CryptocurrencyConfig):
+class SimpleTestConfig(Web3CliConfig):
     """Test configuration class for testing CryptocurrencyConfig functionality."""
 
     name: str
@@ -24,7 +24,7 @@ class SimpleTestConfig(CryptocurrencyConfig):
         return v
 
 
-class AsyncValidatorConfig(CryptocurrencyConfig):
+class AsyncValidatorConfig(Web3CliConfig):
     """Test configuration with async validation."""
 
     name: str

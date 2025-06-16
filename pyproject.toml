@@ -1,13 +1,13 @@
 [project]
-name = "mm-cryptocurrency"
-version = "0.4.7"
+name = "mm-web3"
+version = "0.5.0"
 description = ""
 requires-python = ">=3.13"
 dependencies = [
-    "loguru>=0.7.3",
-    "mm-http>=0.0.3",
+    "mm-std~=0.5.3",
+    "mm-http~=0.1.0",
     "mm-print~=0.1.1",
-    "mm-result>=0.0.4",
+    "loguru>=0.7.3",
 ]
 
 [build-system]

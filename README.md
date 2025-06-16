@@ -1,4 +1,4 @@
-# mm-cryptocurrency
+# mm-web3
 
 A Python library providing utilities for working with multiple blockchain networks, proxy management, and reliable network operations for cryptocurrency applications.
 
@@ -40,7 +40,7 @@ A Python library providing utilities for working with multiple blockchain networ
 
 ```python
 import asyncio
-from mm_cryptocurrency import Network, fetch_proxies, random_node, random_proxy
+from mm_web3 import Network, fetch_proxies, random_node, random_proxy
 
 async def main():
     # Get explorer URL for a token
@@ -72,9 +72,9 @@ asyncio.run(main())
 ```python
 from pathlib import Path
 from pydantic import BaseModel
-from mm_cryptocurrency.config import CryptocurrencyConfig
+from mm_web3.config import Web3CliConfig
 
-class MyConfig(CryptocurrencyConfig):
+class MyConfig(Web3CliConfig):
     api_key: str
     networks: list[str]
     retry_count: int = 3
@@ -94,7 +94,7 @@ print(f"Loaded config: {config.api_key}")
 
 ```python
 import asyncio
-from mm_cryptocurrency.retry import retry_with_node_and_proxy
+from mm_web3.retry import retry_with_node_and_proxy
 from mm_result import Result
 
 async def make_request(node: str, proxy: str | None) -> Result[dict]:
@@ -216,7 +216,7 @@ Run tests with: `just test` or `uv run pytest`
 
 - **`Network`**: Enum of supported blockchain networks
 - **`NetworkType`**: Base network types (EVM, Solana, etc.)
-- **`CryptocurrencyConfig`**: Base class for TOML configuration
+- **`Web3CliConfig`**: Base class for TOML configuration
 
 ### Functions
 

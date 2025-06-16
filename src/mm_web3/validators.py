@@ -5,10 +5,10 @@ from pathlib import Path
 from mm_std import parse_lines
 from pydantic import BaseModel
 
-from mm_cryptocurrency.account import PrivateKeyMap
-from mm_cryptocurrency.calcs import calc_decimal_expression, calc_expression_with_vars
-from mm_cryptocurrency.proxy import fetch_proxies_sync
-from mm_cryptocurrency.utils import read_lines_from_file
+from mm_web3.account import PrivateKeyMap
+from mm_web3.calcs import calc_decimal_expression, calc_expression_with_vars
+from mm_web3.proxy import fetch_proxies_sync
+from mm_web3.utils import read_lines_from_file
 
 type IsAddress = Callable[[str], bool]
 

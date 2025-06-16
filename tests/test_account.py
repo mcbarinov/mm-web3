@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from mm_cryptocurrency.account import PrivateKeyMap
+from mm_web3.account import PrivateKeyMap
 
 from .common import TEST_ETH_PRIVATE_KEYS, eth_private_to_address
 

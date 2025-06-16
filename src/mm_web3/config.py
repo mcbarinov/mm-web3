@@ -8,10 +8,10 @@ import mm_print
 from mm_result import Result
 from pydantic import BaseModel, ConfigDict, ValidationError
 
-T = TypeVar("T", bound="CryptocurrencyConfig")
+T = TypeVar("T", bound="Web3CliConfig")
 
 
-class CryptocurrencyConfig(BaseModel):
+class Web3CliConfig(BaseModel):
     """Base configuration class for cryptocurrency CLI tools.
 
     Provides TOML file loading with optional ZIP archive support,

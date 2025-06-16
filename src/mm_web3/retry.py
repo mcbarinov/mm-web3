@@ -3,8 +3,8 @@ from typing import TypeVar
 
 from mm_result import Result
 
-from mm_cryptocurrency.node import Nodes, random_node
-from mm_cryptocurrency.proxy import Proxies, random_proxy
+from mm_web3.node import Nodes, random_node
+from mm_web3.proxy import Proxies, random_proxy
 
 T = TypeVar("T")
 

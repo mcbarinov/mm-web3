@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from mm_cryptocurrency import read_items_from_file, read_lines_from_file
+from mm_web3 import read_items_from_file, read_lines_from_file
 
 
 class TestReadItemsFromFile:

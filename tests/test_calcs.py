@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from mm_cryptocurrency.calcs import (
+from mm_web3.calcs import (
     _get_suffix,
     _parse_random_function,
     _split_on_plus_minus_tokens,
@@ -20,14 +20,14 @@ class TestCalcDecimalExpression:
         assert calc_decimal_expression("0") == Decimal("0")
         assert calc_decimal_expression("  100.0  ") == Decimal("100.0")
 
-    @patch("mm_cryptocurrency.calcs.random_decimal")
+    @patch("mm_web3.calcs.random_decimal")
     def test_random_function_valid(self, mock_random) -> None:
         mock_random.return_value = Decimal("5.5")
         result = calc_decimal_expression("random(1.0, 10.0)")
         assert result == Decimal("5.5")
         mock_random.assert_called_once_with(Decimal("1.0"), Decimal("10.0"))
 
-    @patch("mm_cryptocurrency.calcs.random_decimal")
+    @patch("mm_web3.calcs.random_decimal")
     def test_random_function_case_insensitive(self, mock_random) -> None:
         mock_random.return_value = Decimal("2.5")
         result = calc_decimal_expression("RANDOM(1, 5)")
@@ -109,7 +109,7 @@ class TestCalcExpressionWithVars:
         expected = int(Decimal("0.5") * 10**18) + 10**9 - 100
         assert result == expected
 
-    @patch("mm_cryptocurrency.calcs.random.randint")
+    @patch("mm_web3.calcs.random.randint")
     def test_random_function_in_expression(self, mock_randint) -> None:
         unit_decimals = {"gwei": 9}
         mock_randint.return_value = 5 * 10**9
@@ -136,7 +136,7 @@ class TestCalcExpressionWithVars:
         with pytest.raises(ValueError, match="unrecognized term"):
             calc_expression_with_vars("unknown_var")
 
-    @patch("mm_cryptocurrency.calcs.random.randint")
+    @patch("mm_web3.calcs.random.randint")
     def test_legacy(self, mock_randint) -> None:
         """Test cases to ensure compatibility with legacy functionality."""
         suffix_decimals = {"eth": 18, "gwei": 9, "t": 6}
@@ -185,7 +185,7 @@ class TestCalcExpressionWithVars:
 
 
 class TestParseRandomFunction:
-    @patch("mm_cryptocurrency.calcs.random.randint")
+    @patch("mm_web3.calcs.random.randint")
     def test_valid_random_function(self, mock_randint) -> None:
         unit_decimals = {"gwei": 9}
         mock_randint.return_value = 5 * 10**9
