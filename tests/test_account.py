@@ -1,6 +1,8 @@
 from pathlib import Path
+from typing import cast
 
 import pytest
+from pydantic import ValidationInfo
 
 from mm_web3.account import PrivateKeyMap
 
@@ -40,13 +42,13 @@ class TestPrivateKeyMapValidation:
     def test_validate_existing_privatekeymap(self) -> None:
         """Test that existing PrivateKeyMap passes validation."""
         original = PrivateKeyMap(TEST_ETH_PRIVATE_KEYS)
-        validated = PrivateKeyMap.validate(original, None)
+        validated = PrivateKeyMap.validate(original, cast(ValidationInfo, None))
         assert validated is original
 
     def test_validate_dict_with_strings(self) -> None:
         """Test validation of dict with string keys and values."""
         test_dict = {"addr1": "key1", "addr2": "key2"}
-        result = PrivateKeyMap.validate(test_dict, None)
+        result = PrivateKeyMap.validate(test_dict, cast(ValidationInfo, None))
         assert isinstance(result, PrivateKeyMap)
         assert result == test_dict
 
@@ -54,18 +56,18 @@ class TestPrivateKeyMapValidation:
         """Test validation fails with non-string keys."""
         test_dict = {123: "key1", "addr2": "key2"}
         with pytest.raises(TypeError, match="All keys in PrivateKeyMap must be strings"):
-            PrivateKeyMap.validate(test_dict, None)
+            PrivateKeyMap.validate(test_dict, cast(ValidationInfo, None))
 
     def test_validate_dict_with_non_string_values(self) -> None:
         """Test validation fails with non-string values."""
         test_dict = {"addr1": 123, "addr2": "key2"}
         with pytest.raises(TypeError, match="All values in PrivateKeyMap must be strings"):
-            PrivateKeyMap.validate(test_dict, None)
+            PrivateKeyMap.validate(test_dict, cast(ValidationInfo, None))
 
     def test_validate_invalid_type(self) -> None:
         """Test validation fails with invalid type."""
         with pytest.raises(TypeError, match="Invalid type for PrivateKeyMap"):
-            PrivateKeyMap.validate("invalid", None)
+            PrivateKeyMap.validate("invalid", cast(ValidationInfo, None))
 
 
 class TestPrivateKeyMapFromList:

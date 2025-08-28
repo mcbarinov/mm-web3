@@ -15,7 +15,7 @@ FuncWithNodeAndProxy = Callable[[str, str | None], Awaitable[Result[T]]]
 FuncWithProxy = Callable[[str | None], Awaitable[Result[T]]]
 
 
-async def retry_with_node_and_proxy(retries: int, nodes: Nodes, proxies: Proxies, func: FuncWithNodeAndProxy[T]) -> Result[T]:
+async def retry_with_node_and_proxy[T](retries: int, nodes: Nodes, proxies: Proxies, func: FuncWithNodeAndProxy[T]) -> Result[T]:
     """
     Retry the given function multiple times with random node and proxy on each attempt.
 
@@ -42,7 +42,7 @@ async def retry_with_node_and_proxy(retries: int, nodes: Nodes, proxies: Proxies
     return Result.err(res.unwrap_err(), {"retry_logs": logs})
 
 
-async def retry_with_proxy(retries: int, proxies: Proxies, func: FuncWithProxy[T]) -> Result[T]:
+async def retry_with_proxy[T](retries: int, proxies: Proxies, func: FuncWithProxy[T]) -> Result[T]:
     """
     Retry the given function multiple times using a random proxy on each attempt.
 

@@ -1,3 +1,4 @@
+import asyncio
 import tempfile
 import zipfile
 from pathlib import Path
@@ -153,8 +154,6 @@ url = "https://example.com"
             missing_file = config_dir / "missing.toml"
             result = await AsyncValidatorConfig.read_toml_config_async(missing_file)
             assert result.is_err()
-
-        import asyncio
 
         asyncio.run(test_async_methods())
 

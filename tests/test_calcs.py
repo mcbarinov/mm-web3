@@ -17,7 +17,7 @@ class TestCalcDecimalExpression:
     def test_plain_numbers(self) -> None:
         assert calc_decimal_expression("123.45") == Decimal("123.45")
         assert calc_decimal_expression("-0.5") == Decimal("-0.5")
-        assert calc_decimal_expression("0") == Decimal("0")
+        assert calc_decimal_expression("0") == Decimal(0)
         assert calc_decimal_expression("  100.0  ") == Decimal("100.0")
 
     @patch("mm_web3.calcs.random_decimal")
@@ -32,7 +32,7 @@ class TestCalcDecimalExpression:
         mock_random.return_value = Decimal("2.5")
         result = calc_decimal_expression("RANDOM(1, 5)")
         assert result == Decimal("2.5")
-        mock_random.assert_called_once_with(Decimal("1"), Decimal("5"))
+        mock_random.assert_called_once_with(Decimal(1), Decimal(5))
 
     def test_random_function_invalid_args(self) -> None:
         with pytest.raises(ValueError, match="wrong expression, random part"):

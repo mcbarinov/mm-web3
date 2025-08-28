@@ -1,4 +1,5 @@
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -189,8 +190,6 @@ class TestConfigValidatorsLogFile:
 
     def test_log_file_tilde_expansion(self, tmp_path: Path) -> None:
         """Test log file validator expands tilde in path."""
-        from unittest.mock import patch
-
         validator = ConfigValidators.log_file()
 
         test_path = tmp_path / "test.log"
