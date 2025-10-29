@@ -250,5 +250,5 @@ class TestSplitOnPlusMinusTokens:
         with pytest.raises(ValueError, match="ends with -"):
             _split_on_plus_minus_tokens("100-")
 
-        with pytest.raises(ValueError, match="ends with +"):
+        with pytest.raises(ValueError, match=r"ends with \+"):
             _split_on_plus_minus_tokens("100+")
