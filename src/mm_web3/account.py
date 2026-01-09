@@ -41,7 +41,7 @@ class PrivateKeyMap(dict[str, str]):
                 raise TypeError("All keys in PrivateKeyMap must be strings")
             if not all(isinstance(v, str) for v in value.values()):
                 raise TypeError("All values in PrivateKeyMap must be strings")
-            return cls(value)
+            return cls(value)  # ty: ignore[no-matching-overload] # false positive
         raise TypeError("Invalid type for PrivateKeyMap. Expected dict or PrivateKeyMap.")
 
     @staticmethod
