@@ -62,32 +62,32 @@ class ConfigValidators:
             ValueError: If addresses are invalid, format is wrong, or no transfers found
         """
 
+        def _parse_transfer_line(line: str, source: str) -> Transfer:
+            arr = line.split()
+            if len(arr) < 2 or len(arr) > 3:
+                raise ValueError(f"illegal {source}: {line}")
+            return Transfer(from_address=arr[0], to_address=arr[1], value=arr[2] if len(arr) > 2 else "")
+
         def validator(v: str) -> list[Transfer]:
-            result = []
+            result: list[Transfer] = []
             for line in parse_lines(v, remove_comments=True):  # don't use lowercase here because it can be a file: /To/Path.txt
                 if line.startswith("file:"):
-                    for file_line in read_lines_from_file(line.removeprefix("file:").strip()):
-                        arr = file_line.split()
-                        if len(arr) < 2 or len(arr) > 3:
-                            raise ValueError(f"illegal file_line: {file_line}")
-                        result.append(Transfer(from_address=arr[0], to_address=arr[1], value=arr[2] if len(arr) > 2 else ""))
-
+                    result.extend(
+                        _parse_transfer_line(fl, "file_line") for fl in read_lines_from_file(line.removeprefix("file:").strip())
+                    )
                 else:
-                    arr = line.split()
-                    if len(arr) < 2 or len(arr) > 3:
-                        raise ValueError(f"illegal line: {line}")
-                    result.append(Transfer(from_address=arr[0], to_address=arr[1], value=arr[2] if len(arr) > 2 else ""))
+                    result.append(_parse_transfer_line(line, "line"))
 
             if lowercase:
                 result = [
                     Transfer(from_address=r.from_address.lower(), to_address=r.to_address.lower(), value=r.value) for r in result
                 ]
 
-            for route in result:
-                if not is_address(route.from_address):
-                    raise ValueError(f"illegal address: {route.from_address}")
-                if not is_address(route.to_address):
-                    raise ValueError(f"illegal address: {route.to_address}")
+            for transfer in result:
+                if not is_address(transfer.from_address):
+                    raise ValueError(f"illegal address: {transfer.from_address}")
+                if not is_address(transfer.to_address):
+                    raise ValueError(f"illegal address: {transfer.to_address}")
 
             if not result:
                 raise ValueError("No valid transfers found")

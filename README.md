@@ -170,46 +170,6 @@ max_attempts = 3
 backoff_seconds = 1.0
 ```
 
-## Development
-
-### Setup
-
-```bash
-# Clone and setup
-git clone <repository-url>
-cd mm-cryptocurrency
-uv sync
-
-# Run tests
-just test
-
-# Format code
-just format
-
-# Run linting
-just lint
-
-# Run security audit
-just audit
-```
-
-### Requirements
-
-- **Python 3.13+**
-- **uv** for package management
-- Dependencies: `mm-http`, `mm-print`, `mm-result`
-
-### Testing
-
-The library includes comprehensive tests covering:
-- Network definitions and utilities
-- Proxy fetching and validation
-- Configuration loading and validation
-- Retry logic and error handling
-- Utility functions
-
-Run tests with: `just test` or `uv run pytest`
-
 ## API Reference
 
 ### Core Classes

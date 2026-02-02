@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, NoReturn, Self, TypeVar
 from zipfile import ZipFile
 
-import mm_print
+from mm_print import print_json, print_plain
 from mm_result import Result
 from pydantic import BaseModel, ConfigDict, ValidationError
 
@@ -31,11 +31,11 @@ class Web3CliConfig(BaseModel):
         if count:
             for k in count:
                 data[k] = len(data[k])
-        mm_print.json(data)
+        print_json(data)
         sys.exit(0)
 
     @classmethod
-    def read_toml_config_or_exit(cls, config_path: Path, zip_password: str = "") -> Self:  # nosec
+    def read_toml_config_or_exit(cls, config_path: Path, zip_password: str = "") -> Self:  # nosec: empty default is for optional password, not hardcoded secret
         """Read TOML config file, exit on error.
 
         Args:
@@ -51,7 +51,7 @@ class Web3CliConfig(BaseModel):
         cls._print_error_and_exit(res)
 
     @classmethod
-    async def read_toml_config_or_exit_async(cls, config_path: Path, zip_password: str = "") -> Self:  # nosec
+    async def read_toml_config_or_exit_async(cls, config_path: Path, zip_password: str = "") -> Self:  # nosec: empty default is for optional password, not hardcoded secret
         """Read TOML config file with async validation, exit on error.
 
         Args:
@@ -67,7 +67,7 @@ class Web3CliConfig(BaseModel):
         cls._print_error_and_exit(res)
 
     @classmethod
-    def _load_toml_data(cls, config_path: Path, zip_password: str = "") -> dict[str, Any]:  # nosec
+    def _load_toml_data(cls, config_path: Path, zip_password: str = "") -> dict[str, Any]:  # nosec: empty default is for optional password, not hardcoded secret
         """Load TOML data from file or ZIP archive.
 
         Args:
@@ -84,7 +84,7 @@ class Web3CliConfig(BaseModel):
             return tomllib.load(f)
 
     @classmethod
-    def read_toml_config(cls, config_path: Path, zip_password: str = "") -> Result[Self]:  # nosec
+    def read_toml_config(cls, config_path: Path, zip_password: str = "") -> Result[Self]:  # nosec: empty default is for optional password, not hardcoded secret
         """Read and validate TOML config file.
 
         Args:
@@ -98,12 +98,12 @@ class Web3CliConfig(BaseModel):
             data = cls._load_toml_data(config_path, zip_password)
             return Result.ok(cls(**data))
         except ValidationError as e:
-            return Result.err(("validator_error", e), extra={"errors": e.errors()})
+            return Result.err(("validator_error", e), context={"errors": e.errors()})
         except Exception as e:
             return Result.err(e)
 
     @classmethod
-    async def read_toml_config_async(cls, config_path: Path, zip_password: str = "") -> Result[Self]:  # nosec
+    async def read_toml_config_async(cls, config_path: Path, zip_password: str = "") -> Result[Self]:  # nosec: empty default is for optional password, not hardcoded secret
         """Read and validate TOML config file with async validators.
 
         Use this method when your config has async model validators that
@@ -121,7 +121,7 @@ class Web3CliConfig(BaseModel):
             model = await cls.model_validate(data)  # type: ignore[misc]
             return Result.ok(model)
         except ValidationError as e:
-            return Result.err(("validator_error", e), extra={"errors": e.errors()})
+            return Result.err(("validator_error", e), context={"errors": e.errors()})
         except Exception as e:
             return Result.err(e)
 
@@ -132,14 +132,14 @@ class Web3CliConfig(BaseModel):
         Args:
             res: Failed Result containing error information
         """
-        if res.error == "validator_error" and res.extra:
-            mm_print.plain("config validation errors")
-            for e in res.extra["errors"]:
+        if res.error == "validator_error" and res.context:
+            print_plain("config validation errors")
+            for e in res.context["errors"]:
                 loc = e["loc"]
                 field = ".".join(str(lo) for lo in loc) if len(loc) > 0 else ""
-                mm_print.plain(f"{field} {e['msg']}")
+                print_plain(f"{field} {e['msg']}")
         else:
-            mm_print.plain(f"can't parse config file: {res.error} {res.extra}")
+            print_plain(f"can't parse config file: {res.error} {res.context}")
         sys.exit(1)
 
 
@@ -156,5 +156,7 @@ def read_text_from_zip_archive(zip_archive_path: Path, filename: str | None = No
     """
     with ZipFile(zip_archive_path) as zipfile:
         if filename is None:
+            if not zipfile.filelist:
+                raise ValueError(f"ZIP archive is empty: {zip_archive_path}")
             filename = zipfile.filelist[0].filename
         return zipfile.read(filename, pwd=password.encode() if password else None).decode()

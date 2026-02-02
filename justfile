@@ -16,8 +16,8 @@ test:
 
 lint *args: format pre-commit
     uv run ruff check {{args}} src tests
-    uv run ty check
     uv run mypy src
+    uv run ty check src
 
 audit:
     uv export --no-dev --all-extras --format requirements-txt --no-emit-project > requirements.txt

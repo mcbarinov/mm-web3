@@ -84,7 +84,7 @@ count = -5
         result = SimpleTestConfig.read_toml_config(validation_error_config)
         assert result.is_err()
         assert result.error == "validator_error"
-        assert result.extra is not None and "errors" in result.extra
+        assert result.context is not None and "errors" in result.context
 
         # Test extra fields (should fail due to forbid extra)
         extra_fields_config = config_dir / "extra.toml"
@@ -200,7 +200,7 @@ name = "test"
 count = -10
 """)
 
-        with patch("sys.exit") as mock_exit, patch("mm_print.plain") as mock_print:
+        with patch("sys.exit") as mock_exit, patch("mm_web3.config.print_plain") as mock_print:
             SimpleTestConfig.read_toml_config_or_exit(validation_error_config)
             mock_exit.assert_called_with(1)
             mock_print.assert_called()
@@ -210,7 +210,7 @@ count = -10
 
         # Test file error exit
         missing_file = config_dir / "missing.toml"
-        with patch("sys.exit") as mock_exit, patch("mm_print.plain") as mock_print:
+        with patch("sys.exit") as mock_exit, patch("mm_web3.config.print_plain") as mock_print:
             SimpleTestConfig.read_toml_config_or_exit(missing_file)
             mock_exit.assert_called_with(1)
             mock_print.assert_called()
@@ -220,7 +220,7 @@ def test_print_and_exit():
     """Test the print_and_exit method functionality."""
     config = SimpleTestConfig(name="test", count=42, enabled=True)
 
-    with patch("sys.exit") as mock_exit, patch("mm_print.json") as mock_print_json:
+    with patch("sys.exit") as mock_exit, patch("mm_web3.config.print_json") as mock_print_json:
         config.print_and_exit()
         mock_exit.assert_called_with(0)
         mock_print_json.assert_called_once()
@@ -230,7 +230,7 @@ def test_print_and_exit():
         assert printed_data["enabled"] is True
 
     # Test with exclude and count parameters
-    with patch("sys.exit") as mock_exit, patch("mm_print.json") as mock_print_json:
+    with patch("sys.exit") as mock_exit, patch("mm_web3.config.print_json") as mock_print_json:
         config.print_and_exit(exclude={"enabled"}, count={"name"})
         printed_data = mock_print_json.call_args[0][0]
         assert "enabled" not in printed_data

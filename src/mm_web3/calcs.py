@@ -120,6 +120,8 @@ def calc_expression_with_vars(
                 term_value = int(term)
             elif suffix is not None:
                 term_value = convert_value_with_units(term, unit_decimals)
+            elif term.startswith("random(") and term.endswith(")"):
+                term_value = _parse_random_function(term, unit_decimals)
             elif variables:
                 # Check if term ends with any variable name
                 matched_var = None
@@ -132,21 +134,19 @@ def calc_expression_with_vars(
                     multiplier_part = term.removesuffix(matched_var)
                     multiplier = Decimal(multiplier_part) if multiplier_part else Decimal(1)
                     term_value = int(multiplier * variables[matched_var])
-                # Check for random function
-                elif term.startswith("random(") and term.endswith(")"):
-                    term_value = _parse_random_function(term, unit_decimals)
                 else:
+                    # Re-raise as ValueError for consistent error type from function
                     raise ValueError(f"unrecognized term: {term}")  # noqa: TRY301
-            elif term.startswith("random(") and term.endswith(")"):
-                term_value = _parse_random_function(term, unit_decimals)
             else:
+                # Re-raise as ValueError for consistent error type from function
                 raise ValueError(f"unrecognized term: {term}")  # noqa: TRY301
 
             if operator == "+":
                 result += term_value
-            if operator == "-":
+            elif operator == "-":
                 result -= term_value
 
+        # Return inside try is intentional - exception handling wraps entire calculation
         return result  # noqa: TRY300
     except Exception as e:
         raise ValueError(e) from e
