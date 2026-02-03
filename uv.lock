@@ -624,16 +624,16 @@ wheels = [
 
 [[package]]
 name = "mm-std"
-version = "0.7.0"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/bc/02/dba2d173f2eb157a3bf49b0e59dc9e9fa5e8a1c124fd49bd0f5cbb5dbfbd/mm_std-0.7.0.tar.gz", hash = "sha256:8fcfb1d9eab3ccd62897ec186290fe85ba5e2d910f7cb195b23a6be8fbd7a2ee", size = 37873, upload-time = "2026-01-23T09:22:12.956Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/9c/7ff712ef4b57e59416f95583cb3ae13e2ed40c9768fc34b89d4023ff2cc4/mm_std-0.7.1.tar.gz", hash = "sha256:7fa306e103eff001bb45ec51ca5aa7a31f269c4690fe6cd94e1b5fb252e0a032", size = 38077, upload-time = "2026-02-03T08:41:28.736Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/93/fb/2e029372c30e630a72282b6f9c4c8606b698d2f69ffabe5d67726cb159c9/mm_std-0.7.0-py3-none-any.whl", hash = "sha256:24d11f0d69462be9caacabeb5a20f4feab055b88e4ef561bd4213d59cd96c881", size = 8422, upload-time = "2026-01-23T09:22:11.723Z" },
+    { url = "https://files.pythonhosted.org/packages/f1/86/d3d6653925530af1d83bd8776f51f4f40fed6b2b4c8ca0ae80c09d5bb32e/mm_std-0.7.1-py3-none-any.whl", hash = "sha256:1900c3520f27513d746ed53787391a1a001c68a60f7436c356e5746892a8cad4", size = 8542, upload-time = "2026-02-03T08:41:27.524Z" },
 ]
 
 [[package]]
 name = "mm-web3"
-version = "0.6.0"
+version = "0.6.1"
 source = { editable = "." }
 dependencies = [
     { name = "loguru" },
@@ -663,7 +663,7 @@ requires-dist = [
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "mm-http", specifier = "~=0.3.0" },
     { name = "mm-print", specifier = "~=0.3.0" },
-    { name = "mm-std", specifier = "~=0.7.0" },
+    { name = "mm-std", specifier = "~=0.7.1" },
 ]
 
 [package.metadata.requires-dev]
